@@ -1,0 +1,13 @@
+# Virtual Environment
+env/
+
+# Configurazione IDE PyCharm
+.idea/
+
+# File temporanei Python (Byte-code)
+__pycache__/
+*.pyc
+
+# Cartelle di Lavoro (che verranno create da te)
+data/
+results/
