@@ -8,6 +8,6 @@ env/
 __pycache__/
 *.pyc
 
-# Cartelle di Lavoro (che verranno create da te)
+# Cartelle di Lavoro 
 data/
 results/
