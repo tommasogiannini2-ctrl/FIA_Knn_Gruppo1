@@ -1,8 +1,8 @@
-\# 🔬 Progetto FIA - Classificatore di Tumori k-NN (Gruppo 1): Giannini Tommaso, di Raimondo Gabriele, Romito Flavia
+#  Progetto FIA - Classificatore di Tumori k-NN (Gruppo 1): Giannini Tommaso, di Raimondo Gabriele, Romito Flavia
 
 
 
-\## Obiettivo del Progetto
+## Obiettivo del Progetto
 
 Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica in Python che addestra e valuta un classificatore \*\*k-Nearest Neighbors (k-NN)\*\* . Il modello è utilizzato per classificare le cellule tumorali come benigne (Classe 2) o maligne (Classe 4) in base a 9 caratteristiche fornite.
 
@@ -10,11 +10,11 @@ Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica 
 
 
 
-\## Configurazione e Specifiche Tecniche
+## Configurazione e Specifiche Tecniche
 
 
 
-\### Parametri Definitivi del Gruppo (i=1)
+### Parametri Definitivi del Gruppo (i=1)
 
 | \*\*A (Input Data)\*\* | `version\_1.csv` | I dati di input devono essere caricati da un file in formato \*\*CSV\*\*. |
 
@@ -24,21 +24,21 @@ Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica 
 
 
 
-\### Modularizzazione e Pattern
+### Modularizzazione e Pattern
 
-\* Il codice include la \*\*verifica automatica di almeno 3 test di correttezza\*\* tramite il modulo `unittest`.
+* Il codice include la \*\*verifica automatica di almeno 3 test di correttezza\*\* tramite il modulo `unittest`.
 
 
 
-\### Dipendenze
+### Dipendenze
 
 Sono consentiti e utilizzati i seguenti pacchetti non standard:
 
-\* `numpy` (per operazioni vettoriali e matriciali).
+* `numpy` (per operazioni vettoriali e matriciali).
 
-\* `pandas` (per il caricamento e la manipolazione del dataset).
+* `pandas` (per il caricamento e la manipolazione del dataset).
 
-\* `matplotlib` (per la visualizzazione dei risultati, es. Confusion Matrix, ROC).
+* `matplotlib` (per la visualizzazione dei risultati, es. Confusion Matrix, ROC).
 
 aggiungi eventuali altre
 
@@ -46,31 +46,31 @@ aggiungi eventuali altre
 
 
 
-\## Dataset e Data Preprocessing
+## Dataset e Data Preprocessing
 
+(da completare)
 
-
-\### Struttura del Dataset
+### Struttura del Dataset
 
 Il dataset è un file di tipo .csv
 
 Il dataset contiene le seguenti colonne:
 
-\* \*\*ID/Identificativi:\*\* `ID`, `Sample code number` (Non utilizzate come features).
+* \*\*ID/Identificativi:\*\* `ID`, `Sample code number` (Non utilizzate come features).
 
-\* \*\*Features (X):\*\* 9 colonne con valori ordinali interi da 1 a 10.
+* \*\*Features (X):\*\* 9 colonne con valori ordinali interi da 1 a 10.
 
-\* \*\*Target (Y):\*\* `Class` (2 = Benigno, 4 = Maligno).
+* \*\*Target (Y):\*\* `Class` (2 = Benigno, 4 = Maligno).
 
 
 
-\### Gestione delle Peculiarità (Decisione Implementativa)
+### Gestione delle Peculiarità (Decisione Implementativa)
 
 Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal carattere \*\*<<Null>>\*\*, o anomali.
 
 
 
-\*\*Strategia Adottata (Da Completare):\*\* 
+*\*Strategia Adottata (Da Completare):\*\* 
 
 
 
@@ -78,11 +78,11 @@ Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal caratte
 
 
 
-\## Istruzioni per l'Esecuzione
+## Istruzioni per l'Esecuzione
 
 
 
-\### 1. Preparazione dell'Ambiente
+### 1. Preparazione dell'Ambiente
 
 
 
@@ -118,7 +118,7 @@ Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal caratte
 
 
 
-\### 2. Esecuzione del Programma (Da Definire)
+### 2. Esecuzione del Programma (Da Definire)
 
 
 
@@ -132,7 +132,7 @@ Il programma dovrà essere eseguito tramite il file principale `main.py` specifi
 
 
 
-\## Risultati
+## Risultati
 
 
 
