@@ -16,7 +16,7 @@ Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica 
 
 ### Parametri Definitivi del Gruppo (i=1)
 
-| ##A (Input Data)## | `version\_1.csv` | I dati di input devono essere caricati da un file in formato \*\*CSV\*\*. |
+| \*\*A (Input Data)\*\* | `version\_1.csv` | I dati di input devono essere caricati da un file in formato \*\*CSV\*\*. |
 
 | \*\*B (Validazione 1)\*\* | \*\*`Random Subsampling`\*\* | Tecnica di valutazione richiesta in modalità \*K\* esperimenti. |
 
