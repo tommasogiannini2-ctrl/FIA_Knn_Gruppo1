@@ -60,12 +60,11 @@ class data_csv:
 
 
 # Esecuzione
-try:
-    dati = data_csv('./dati/version_1.csv')
-    print(dati.data)
 
-except FileNotFoundError:
-    print("Errore: File 'version_1.csv' non trovato. Assicurati che sia nella cartella './dati/'.")
+dati = data_csv('./dati/version_1.csv')
+print(dati.data)
+
+
 
 
 
