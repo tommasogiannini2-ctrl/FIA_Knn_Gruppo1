@@ -67,7 +67,7 @@ Il dataset contiene le seguenti colonne:
 ### Gestione delle Peculiarità (Decisione Implementativa)
 
 Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal carattere \*\*<<Null>>\*\*, o anomali.
-
+Questi valori nulli devono essere corretti.
 
 
 *\*Strategia Adottata (Da Completare):\*\* 
