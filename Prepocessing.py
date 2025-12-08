@@ -1,17 +1,25 @@
+
+#VERSIONE DI TOMMASO
 import pandas as pd
-
-
-
 class data_csv:
 
     # Metodo costruttore
-    def __init__(self, dataframe_path):
+    def __init__(self, dataframe_path:str)-> pd.DataFrame:
         # Inizializza i dati leggendo il file csv
-        self.data = pd.read_csv(dataframe_path)
-        self.data = self.elimina_duplicati(self.data)
-        self.data=self.elimina_features(self.data)
-        self.data=self.elimina_nulli(self.data)
+       try:
+           self.data = pd.read_csv(dataframe_path)
+           print(f"File '{dataframe_path}' estratto con successo nel DataFrame 'df'.\n")
+       except FileNotFoundError:
+           print(
+               f"ERRORE: Il file '{dataframe_path}' non è stato trovato. Assicurati che sia nella stessa cartella dello script Python o che il percorso sia corretto.")
+       except Exception as e:
+           print(f"Si è verificato un errore durante la lettura del file: {e}")
 
+       self.data = self.elimina_duplicati(self.data)
+       self.data=self.elimina_features(self.data)
+       self.data=self.elimina_nulli(self.data)
+       print("\n--- Informazioni sulla struttura del DataFrame ) ---")
+       self.data.info()
     # Metodo per eliminare duplicati
     def elimina_duplicati(self, dati):
         dati = dati.drop_duplicates()
