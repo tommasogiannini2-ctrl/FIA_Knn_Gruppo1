@@ -47,7 +47,7 @@ aggiungi eventuali altre
 
 
 ## Dataset e Data Preprocessing
-
+I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali ed eliminazione dei dati nulli
 (da completare)
 
 ### Struttura del Dataset
