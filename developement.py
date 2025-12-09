@@ -9,5 +9,7 @@ class KNNClassifier:
     def training_set(self, x_training, y_training):
 
     def distanza_euclidea(self, a, b) -> float:
+        return
 
     def classificazione(self, x_test) -> int|float:
+        return
