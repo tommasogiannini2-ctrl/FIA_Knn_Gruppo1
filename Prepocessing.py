@@ -1,6 +1,6 @@
 import pandas as pd
 from abc import ABC
-
+#
 class Abstract_opener(ABC):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         pass
