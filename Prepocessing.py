@@ -38,6 +38,14 @@ def scegli_opener(dataframe_path:str)-> SQLOpener | XLSOpener | CSVOpener:
         case _:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
+def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)->pd.DataFrame:
+    dataframe_unico = pd.concat([dataframe1, dataframe2], ignore_index=True)
+    nuovo_nome = 'ClasseObiettivo'
+    colonne_attuali = dataframe_unico.columns.tolist()
+    colonne_attuali[-1] = nuovo_nome
+    dataframe_unico.columns = colonne_attuali
+    return dataframe_unico
+
 
 class DataCsv:
 
@@ -47,7 +55,7 @@ class DataCsv:
         self.path=dataframe_path
 
 
-    def load(self) -> pd.DataFrame:
+    def load(self) -> list[pd.DataFrame]:
         self.data = self.opener.open(self.path)
         self.data = self.elimina_duplicati(self.data)
 
@@ -66,7 +74,7 @@ class DataCsv:
         self.data.info()
         print("\n--- Informazioni sulla struttura della colonna classtype_v1 ) ---")
         print(self.classe.info())
-        return self.data, self.classe
+        return [self.data, self.classe]
 
 
     # Metodo per eliminare duplicati
@@ -132,6 +140,7 @@ class DataCsv:
         return dati
 
 
+
 # Esecuzione
 
 nomefile = './dati/version_1.csv'
@@ -139,4 +148,6 @@ nomefile = './dati/version_1.csv'
 opener = scegli_opener(nomefile)
 
 dati = DataCsv(opener,nomefile)
-dati.load()
+tupla = dati.load()
+data_unico = unificaDF(tupla[0],tupla[1])
+print(data_unico.info())
