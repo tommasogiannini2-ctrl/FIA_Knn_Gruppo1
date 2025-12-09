@@ -48,7 +48,7 @@ aggiungi eventuali altre
 
 
 ## Dataset e Data Preprocessing
-I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali, eliminazione dei dati nulli, eliminazione righe che hanno valore nulli nella colonna 'classtype_v1' ed eliminazione righe con più di 4 valori nulli.
+I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali, eliminazione dei dati nulli, eliminazione righe che hanno valore nulli nella colonna 'classtype_v1',eliminazione righe con più di 4 valori nulli, eliminazione dei dati fuori dal range 1-10 e 2/4 per classtype_v1, conversione stringhe in interi.
 (da completare)
 
 ### Struttura del Dataset
