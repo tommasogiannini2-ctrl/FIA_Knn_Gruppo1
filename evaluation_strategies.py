@@ -5,8 +5,22 @@ class EvaluationStrategy:
     def __init__(self, data):
         self.dati = data
 
-    def Kfold(self, dati: pd.DataFrame,):
-        pass
+    def Kfold(self, k_prove: int) -> list[list[pd.DataFrame]]:
+        dimensione_parte = len(self.dati)//k_prove
+        lista = []
+        for i in range(k_prove):
+            # Calcola l'indice di inizio e fine
+            inizio = i * dimensione_parte
+            # Per l'ultima parte, assicurati di prendere tutte le righe rimanenti
+            fine = (i + 1) * dimensione_parte if i < k_prove - 1 else len(self.dati)
+            lista.append(self.dati[inizio:fine])
+
+            # Estrai il sotto-DataFrame
+            test = self.dati.iloc[inizio:fine]
+            training = self.dati.drop(test.index)
+            lista.append([training,test])
+        return lista
+
 
     def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
         lista =[]
