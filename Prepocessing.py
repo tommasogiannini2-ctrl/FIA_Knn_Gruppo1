@@ -1,24 +1,49 @@
+from unittest import case
 
 #VERSIONE DI TOMMASO
 import pandas as pd
+from abc import ABC
 
-class data_csv:
+class Abstract_opener(ABC):
+    def open(self,dataframe_path:str)->pd.DataFrame|None:
+        pass
+
+class XLS_Opener():
+    def open(self,dataframe_path:str)->pd.DataFrame|None:
+        self.data=pd.read_excel(dataframe_path)
+        return self.data
+class CSV_opener():
+    def open(self, dataframe_path: str)->pd.DataFrame|None:
+        self.data = pd.read_csv(dataframe_path)
+        return self.data
+
+class SQL_opener():
+    def open(self, dataframe_path: str)->pd.DataFrame|None:
+        self.data = pd.read_sql(dataframe_path)
+        return self.data
+
+def open(dataframe_path:str)->Abstract_opener:
+    ext=dataframe_path.split('.')[-1]
+    match ext:
+        case 'csv':
+            return CSV_opener()
+        case 'xls':
+            return XLS_Opener()
+        case 'sql':
+            return SQL_opener()
+        case _:
+            raise RuntimeError(f"Unsupported file type: {ext}")
+
+
+class data_csv():
 
     # Metodo costruttore
-    def __init__(self):
-        self.data=None
+    def __init__(self,Opener:Abstract_opener):
+        self.opener=Opener
+
 
     def load(self, dataframe_path:str)-> pd.DataFrame:
-        # Inizializza i dati leggendo il file csv
-       try:
-           self.data = pd.read_csv(dataframe_path)
-           print(f"File '{dataframe_path}' estratto con successo nel DataFrame 'df'.\n")
-       except FileNotFoundError:
-           print(
-               f"ERRORE: Il file '{dataframe_path}' non è stato trovato. Assicurati che sia nella stessa cartella dello script Python o che il percorso sia corretto.")
-       except Exception as e:
-           print(f"Si è verificato un errore durante la lettura del file: {e}")
-
+       self.data = self.opener.open(dataframe_path)
        self.data = self.elimina_duplicati(self.data)
        self.data=self.elimina_features(self.data)
        self.data=self.elimina_nulli(self.data)
@@ -69,7 +94,6 @@ class data_csv:
         else:
             print('valori nullo')
         return dati
-
 
 
 
