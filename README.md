@@ -40,6 +40,8 @@ Sono consentiti e utilizzati i seguenti pacchetti non standard:
 
 * `matplotlib` (per la visualizzazione dei risultati, es. Confusion Matrix, ROC).
 
+*'ABC' per l'implemetazione delle factory.
+
 aggiungi eventuali altre
 
 ---
@@ -47,12 +49,12 @@ aggiungi eventuali altre
 
 
 ## Dataset e Data Preprocessing
-I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali ed eliminazione dei dati nulli
+I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali, eliminazione dei dati nulli, eliminazione righe che hanno valore nulli nella colonna 'classtype_v1' ed eliminazione righe con più di 4 valori nulli.
 (da completare)
 
 ### Struttura del Dataset
 
-Il dataset è un file di tipo .csv
+Il dataset è un file di tipo .csv. Attraverso le factory è concessa anche la lettura di file con estensione XLS e SQL.
 
 Il dataset contiene le seguenti colonne:
 
@@ -67,7 +69,7 @@ Il dataset contiene le seguenti colonne:
 ### Gestione delle Peculiarità (Decisione Implementativa)
 
 Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal carattere \*\*<<Null>>\*\*, o anomali.
-
+i Valori nulli sono risolti con sostituzione della moda perchè ritenuta più rappresentativa in quanto mostra il valore più probabile senza necessità di arrotondamento del valore. 
 
 
 *\*Strategia Adottata (Da Completare):\*\* 
