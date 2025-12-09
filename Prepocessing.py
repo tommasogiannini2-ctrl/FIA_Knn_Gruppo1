@@ -1,6 +1,7 @@
 
 #VERSIONE DI TOMMASO
 import pandas as pd
+
 class data_csv:
 
     # Metodo costruttore
@@ -20,6 +21,8 @@ class data_csv:
        self.data=self.elimina_nulli(self.data)
        print("\n--- Informazioni sulla struttura del DataFrame ) ---")
        self.data.info()
+
+
     # Metodo per eliminare duplicati
     def elimina_duplicati(self, dati):
         dati = dati.drop_duplicates()
@@ -32,7 +35,7 @@ class data_csv:
     #Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size
     #Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
     def elimina_features(self,dati):
-        features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate','classtype_v1']
+        features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate']
         for feature in features_eliminate:
             dati= dati.drop(columns=[feature],axis=1)
 
@@ -64,7 +67,10 @@ class data_csv:
 dati = data_csv('./dati/version_1.csv')
 print(dati.data)
 
-
+#decidi se moda media o mediana
+#fai la factory
+#se più di due null sul record eliminalo
+#valuta se eliminare il record dove il class type è nullo
 
 
 
