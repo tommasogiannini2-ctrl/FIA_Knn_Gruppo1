@@ -5,7 +5,10 @@ import pandas as pd
 class data_csv:
 
     # Metodo costruttore
-    def __init__(self, dataframe_path:str)-> pd.DataFrame:
+    def __init__(self):
+        self.data=None
+
+    def load(self, dataframe_path:str)-> pd.DataFrame:
         # Inizializza i dati leggendo il file csv
        try:
            self.data = pd.read_csv(dataframe_path)
@@ -41,6 +44,14 @@ class data_csv:
 
         return dati
 
+    def elimina_classnull(self,dati):
+
+        return dati
+
+    def elimina_recordnull(self,dati):
+
+        return dati
+
     #metodo eliminazione dei valori nulli (Nan e <null>)
     def elimina_nulli(self ,dati):
         #decido d sostituire i valori mancanti con la moda di ogni colonna, perchè la ritengo più segnificativa
@@ -64,14 +75,13 @@ class data_csv:
 
 # Esecuzione
 
-dati = data_csv('./dati/version_1.csv')
-print(dati.data)
+dati = data_csv()
+dati=dati.load('./dati/version_1.csv')
+print(dati)
 
-#decidi se moda media o mediana
+
 #fai la factory
 #se più di due null sul record eliminalo
 #valuta se eliminare il record dove il class type è nullo
-
-
 
 
