@@ -43,11 +43,19 @@ class DataCsv:
     def load(self) -> pd.DataFrame:
         self.data = self.opener.open(self.path)
         self.data = self.elimina_duplicati(self.data)
+        self.data=self.elimina_classnull(self.data)
+        self.classe = self.estrai_classe(self.data)
         self.data = self.elimina_features(self.data)
+        self.data=self.elimina_recordnull(self.data)
         self.data = self.elimina_nulli(self.data)
+        print('conta quanti null ci sno per ogni colonna')
+        print(self.data.isnull().sum())
+
         print("\n--- Informazioni sulla struttura del DataFrame ) ---")
         self.data.info()
-        return self.data
+        print("\n--- Informazioni sulla struttura della colonna classtype_v1 ) ---")
+        print(self.classe.info())
+        return self.data, self.classe
 
 
     # Metodo per eliminare duplicati
@@ -62,37 +70,40 @@ class DataCsv:
     #Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size
     #Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
     def elimina_features(self,dati):
-        features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate']
+        features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate','classtype_v1']
         for feature in features_eliminate:
             dati= dati.drop(columns=[feature],axis=1)
 
         return dati
-
+    #Metodo che elimina le righe a cui corrisponde un valore nullo nella colonna classtype_v1
     def elimina_classnull(self,dati):
-
+        target_col = 'classtype_v1'
+        righe_prima = len(dati)
+        # Rimuove le righe dove il valore nella colonna 'classtype_v1' è nullo (NaN)
+        dati = dati.dropna(subset=[target_col]).reset_index(drop=True)
         return dati
 
+
     def elimina_recordnull(self,dati):
+
+        N_max_null=4
+        #il thresh garantisce che chi non soddisfa la condizione di minimi valori non nulli venga eliminato
+        dati = dati.dropna(thresh=len(dati.columns) - N_max_null).reset_index(drop=True)
 
         return dati
 
     #metodo eliminazione dei valori nulli (Nan e <null>)
     def elimina_nulli(self ,dati):
-        #decido d sostituire i valori mancanti con la moda di ogni colonna, perchè la ritengo più segnificativa
-        # rispetto a media e mediana,perchè non sapendo se una cellula è tumorale o no prendo il valore che
-        # statisticamente si ripete di più
-
         #calcolo della moda di ogni colonna,scegliendo per tutti il primo valore
         for col in self.data.columns:
             mode_value = self.data[col].mode()[0]
             dati.loc[:, col] = dati.loc[:, col].fillna(mode_value)
 
-        #verifica che tutti i Nan siano eliminati
-        if(dati.isnull().sum()==0).all():
-            print('nessun valore nullo')
-        else:
-            print('valori nullo')
         return dati
+
+    def estrai_classe(self,data):
+        classe= self.data['classtype_v1']
+        return classe
 
 
 
