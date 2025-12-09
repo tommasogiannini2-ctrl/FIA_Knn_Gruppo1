@@ -93,7 +93,7 @@ class DataCsv:
         return dati
 
     #metodo eliminazione dei valori nulli (Nan e <null>)
-    def elimina_nulli(self ,dati):
+    def elimina_nulli(self ,dati:):
         #calcolo della moda di ogni colonna,scegliendo per tutti il primo valore
         for col in self.data.columns:
             mode_value = self.data[col].mode()[0]
@@ -117,7 +117,6 @@ dati = DataCsv(opener,nomefile)
 dati.load()
 
 
-#se più di due null sul record eliminalo
-#valuta se eliminare il record dove il class type è nullo
+
 
 
