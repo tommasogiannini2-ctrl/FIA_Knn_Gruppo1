@@ -1,6 +1,8 @@
 import pandas as pd
 from abc import ABC
-#
+import numpy as np
+
+
 class Abstract_opener(ABC):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         pass
@@ -11,7 +13,12 @@ class XLSOpener(Abstract_opener):
         return self.data
 class CSVOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
-        self.data = pd.read_csv(dataframe_path)
+        # 1. Gestione di '?' come NaN
+        self.data = pd.read_csv(dataframe_path, na_values=['?'])
+
+        for col in self.data.columns:
+            # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
+            self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data
 
 class SQLOpener(Abstract_opener):
@@ -43,6 +50,10 @@ class DataCsv:
     def load(self) -> pd.DataFrame:
         self.data = self.opener.open(self.path)
         self.data = self.elimina_duplicati(self.data)
+
+        self.data=self.elimina_outrange_features(self.data)
+        self.data=self.elimina_outrange_class(self.data)
+
         self.data=self.elimina_classnull(self.data)
         self.classe = self.estrai_classe(self.data)
         self.data = self.elimina_features(self.data)
@@ -105,8 +116,21 @@ class DataCsv:
         classe= self.data['classtype_v1']
         return classe
 
+    def elimina_outrange_features(self, dati):
 
+        colonna_target = 'classtype_v1'
 
+        feature_cols = [col for col in dati.columns if col != colonna_target]
+
+        for col in feature_cols:
+         # Qui il confronto è sicuro perché il CSVOpener ha già convertito tutto in numerico.
+            dati[col] = dati[col].mask((dati[col] < 1) | (dati[col] > 10), np.nan)
+        return dati
+    def elimina_outrange_class(self, dati):
+        target_col = 'classtype_v1'
+        # 💡 CORREZIONE LOGICA: Usare AND (&) per identificare i valori non validi (non 2 E non 4)
+        dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)
+        return dati
 # Esecuzione
 
 nomefile = './dati/version_1.csv'
@@ -115,8 +139,3 @@ opener = scegli_opener(nomefile)
 
 dati = DataCsv(opener,nomefile)
 dati.load()
-
-
-
-
-
