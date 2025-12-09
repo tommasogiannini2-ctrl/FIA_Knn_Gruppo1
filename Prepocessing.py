@@ -5,7 +5,7 @@ import pandas as pd
 class data_csv:
 
     # Metodo costruttore
-    def __init__(self, dataframe_path:str)-> pd.DataFrame:
+    def __init__(self, dataframe_path:str):
         # Inizializza i dati leggendo il file csv
        try:
            self.data = pd.read_csv(dataframe_path)
@@ -24,7 +24,7 @@ class data_csv:
 
 
     # Metodo per eliminare duplicati
-    def elimina_duplicati(self, dati):
+    def elimina_duplicati(self, dati: pd.DataFrame) -> pd.DataFrame:
         dati = dati.drop_duplicates()
         # Riassegna gli indici dopo l'eliminazione
         dati = dati.reset_index(drop=True)
@@ -34,7 +34,7 @@ class data_csv:
     #Metodo che tiene solo le features rilevanti:Clump Thickness,Uniformity of Cell Size
     #Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size
     #Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
-    def elimina_features(self,dati):
+    def elimina_features(self,dati: pd.DataFrame) -> pd.DataFrame:
         features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate']
         for feature in features_eliminate:
             dati= dati.drop(columns=[feature],axis=1)
@@ -42,7 +42,7 @@ class data_csv:
         return dati
 
     #metodo eliminazione dei valori nulli (Nan e <null>)
-    def elimina_nulli(self ,dati):
+    def elimina_nulli(self ,dati: pd.DataFrame) -> pd.DataFrame:
         #decido d sostituire i valori mancanti con la moda di ogni colonna, perchè la ritengo più segnificativa
         # rispetto a media e mediana,perchè non sapendo se una cellula è tumorale o no prendo il valore che
         # statisticamente si ripete di più
