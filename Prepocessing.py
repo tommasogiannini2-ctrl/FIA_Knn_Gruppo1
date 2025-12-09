@@ -1,6 +1,3 @@
-from unittest import case
-
-#VERSIONE DI TOMMASO
 import pandas as pd
 from abc import ABC
 
@@ -8,47 +5,49 @@ class Abstract_opener(ABC):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         pass
 
-class XLS_Opener():
+class XLSOpener(Abstract_opener):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         self.data=pd.read_excel(dataframe_path)
         return self.data
-class CSV_opener():
+class CSVOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
         self.data = pd.read_csv(dataframe_path)
         return self.data
 
-class SQL_opener():
+class SQLOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
         self.data = pd.read_sql(dataframe_path)
         return self.data
 
-def open(dataframe_path:str)->Abstract_opener:
+def scegli_opener(dataframe_path:str)-> SQLOpener | XLSOpener | CSVOpener:
     ext=dataframe_path.split('.')[-1]
     match ext:
         case 'csv':
-            return CSV_opener()
+            return CSVOpener()
         case 'xls':
-            return XLS_Opener()
+            return XLSOpener()
         case 'sql':
-            return SQL_opener()
+            return SQLOpener()
         case _:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
 
-class data_csv():
+class DataCsv:
 
     # Metodo costruttore
-    def __init__(self,Opener:Abstract_opener):
+    def __init__(self,Opener:Abstract_opener,dataframe_path:str)->None:
         self.opener=Opener
+        self.path=dataframe_path
 
 
-    def load(self, dataframe_path:str)-> pd.DataFrame:
-       self.data = self.opener.open(dataframe_path)
-       self.data = self.elimina_duplicati(self.data)
-       self.data=self.elimina_features(self.data)
-       self.data=self.elimina_nulli(self.data)
-       print("\n--- Informazioni sulla struttura del DataFrame ) ---")
-       self.data.info()
+    def load(self) -> pd.DataFrame:
+        self.data = self.opener.open(self.path)
+        self.data = self.elimina_duplicati(self.data)
+        self.data = self.elimina_features(self.data)
+        self.data = self.elimina_nulli(self.data)
+        print("\n--- Informazioni sulla struttura del DataFrame ) ---")
+        self.data.info()
+        return self.data
 
 
     # Metodo per eliminare duplicati
@@ -99,12 +98,14 @@ class data_csv():
 
 # Esecuzione
 
-dati = data_csv()
-dati=dati.load('./dati/version_1.csv')
-print(dati)
+nomefile = './dati/version_1.csv'
+
+opener = scegli_opener(nomefile)
+
+dati = DataCsv(opener,nomefile)
+dati.load()
 
 
-#fai la factory
 #se più di due null sul record eliminalo
 #valuta se eliminare il record dove il class type è nullo
 
