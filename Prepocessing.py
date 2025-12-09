@@ -128,9 +128,10 @@ class DataCsv:
         return dati
     def elimina_outrange_class(self, dati):
         target_col = 'classtype_v1'
-        # 💡 CORREZIONE LOGICA: Usare AND (&) per identificare i valori non validi (non 2 E non 4)
         dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)
         return dati
+
+
 # Esecuzione
 
 nomefile = './dati/version_1.csv'
