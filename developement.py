@@ -40,4 +40,7 @@ class KNNClassifier:
         conteggio_classi = colonna_classi.value_counts()
         classe_maggiore = conteggio_classi.index[0]
 
-        return classe_maggiore
+        classe_1 = conteggio_classi.get(1, 0)
+        prob_predetta = classe_1 / self.k
+
+        return classe_maggiore, prob_predetta
