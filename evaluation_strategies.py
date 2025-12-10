@@ -69,7 +69,38 @@ class Metriche:
         specificity = self.specificity()
         return np.sqrt(sensitivity * specificity)
 
-    def area_under_the_curve(self):
-        pass
+    def area_under_the_curve(self, classe_vera, thresholds, prob_predette):
+        TPR = []
+        FPR = []
 
+        classe_vera = np.array(classe_vera)
+        prob_predette = np.array(prob_predette)
 
+        for threshold in thresholds:
+            classe_predetta_soglia = (prob_predette >= threshold)
+            TP = np.sum((classe_vera == 1) & (classe_predetta_soglia == 1))
+            TN = np.sum((classe_vera == 0) & (classe_predetta_soglia == 0))
+            FP = np.sum((classe_vera == 0) & (classe_predetta_soglia == 1))
+            FN = np.sum((classe_vera == 1) & (classe_predetta_soglia == 0))
+
+            P = TP + FN
+            N = TN + FP
+
+            TPR_p = TP / P
+            FPR_p = FP / N
+
+            TPR.append(TPR_p)
+            FPR.append(FPR_p)
+
+        sort_idx = np.argsort(FPR)
+        FPR_sorted = np.array(FPR)[sort_idx]
+        TPR_sorted = np.array(TPR)[sort_idx]
+
+        auc = 0
+        for i in range(len(FPR_sorted) - 1):
+            delta_FPR = FPR_sorted[i + 1] - FPR_sorted[i]
+            avg_TPR = (TPR_sorted[i] + TPR_sorted[i + 1]) / 2
+            area_trapezio = delta_FPR * avg_TPR
+            auc += area_trapezio
+
+        return auc
