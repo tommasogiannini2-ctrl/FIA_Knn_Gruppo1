@@ -16,7 +16,6 @@ class TestDataPreprocessing(unittest.TestCase):
             'Data_Ricovero': pd.to_datetime(['2024-10-01', '2024-09-20', '2024-11-05', '2024-09-01', '2024-10-15'])
         }
 
-        # Crea il DataFrame clinico
         self.df_prova = pd.DataFrame(data)
 
     def test_path_not_found_exception_raised(self):
@@ -30,6 +29,9 @@ class TestDataPreprocessing(unittest.TestCase):
             p.load()
 
     def test_random_subsampling_intersection_empy(self):
+        """
+        Verifica che i dataframe di test e training hanno intersezione vuota
+        """
         df = EvaluationStrategy(self.df_prova)
         l = df.RandomSubsampling(1, 0.8)
         coppiadf = l[0]
@@ -41,6 +43,10 @@ class TestDataPreprocessing(unittest.TestCase):
                         f"L'intersezione non è vuota. Trovate {len(intersezione_df)} righe comuni.")
 
     def test_kfold_intersection_empy(self):
+        """
+        Verifica che i dataframe di test e training hanno intersezione vuota, per le due divisioni.
+        Verifica inoltre che i due datafram di test hanno intersezione vuota
+        """
         df = EvaluationStrategy(self.df_prova)
         l = df.Kfold(2)
 
