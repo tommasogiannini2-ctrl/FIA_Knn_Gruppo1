@@ -34,6 +34,9 @@ class EvaluationStrategy:
         return lista
 
 class Metriche:
+    """
+    Classe per calcolare metriche di valutazione.
+    """
 
     def __init__(self, classe_vera, classe_predetta):
         self.classe_vera = classe_vera
@@ -43,6 +46,9 @@ class Metriche:
             self.matrice_confusione()
 
     def matrice_confusione(self):
+        """
+        Calcola gli elementi della matrice di confusione.
+        """
         self.TP = np.sum((self.classe_vera == 1) & (self.classe_predetta == 1))
         self.TN = np.sum((self.classe_vera == 0) & (self.classe_predetta == 0))
         self.FP = np.sum((self.classe_vera == 0) & (self.classe_predetta == 1))
@@ -76,8 +82,10 @@ class Metriche:
         classe_vera = np.array(classe_vera)
         prob_predette = np.array(prob_predette)
 
+        # itera su ogni soglia per calcolare true positive rate e false positive rate
         for threshold in thresholds:
             classe_predetta_soglia = (prob_predette >= threshold)
+            # ricalcolo degli elementi della matrice di confusione per la soglia corrente
             TP = np.sum((classe_vera == 1) & (classe_predetta_soglia == 1))
             TN = np.sum((classe_vera == 0) & (classe_predetta_soglia == 0))
             FP = np.sum((classe_vera == 0) & (classe_predetta_soglia == 1))
@@ -92,15 +100,16 @@ class Metriche:
             TPR.append(TPR_p)
             FPR.append(FPR_p)
 
-        sort_idx = np.argsort(FPR)
-        FPR_sorted = np.array(FPR)[sort_idx]
-        TPR_sorted = np.array(TPR)[sort_idx]
+        indici = np.argsort(FPR)
+        FPR_sorted = np.array(FPR)[indici]
+        TPR_sorted = np.array(TPR)[indici]
 
+        # calcolo dell'AUC utilizzando il metodo del trapezio
         auc = 0
         for i in range(len(FPR_sorted) - 1):
-            delta_FPR = FPR_sorted[i + 1] - FPR_sorted[i]
-            avg_TPR = (TPR_sorted[i] + TPR_sorted[i + 1]) / 2
-            area_trapezio = delta_FPR * avg_TPR
+            FPR_trap = FPR_sorted[i + 1] - FPR_sorted[i]
+            TPR_trap = (TPR_sorted[i] + TPR_sorted[i + 1]) / 2
+            area_trapezio = FPR_trap * TPR_trap
             auc += area_trapezio
 
         return auc
