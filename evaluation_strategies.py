@@ -100,6 +100,7 @@ class Metriche:
             TPR.append(TPR_p)
             FPR.append(FPR_p)
 
+        # ordina i punti in base a FPR
         indici = np.argsort(FPR)
         FPR_sorted = np.array(FPR)[indici]
         TPR_sorted = np.array(TPR)[indici]
