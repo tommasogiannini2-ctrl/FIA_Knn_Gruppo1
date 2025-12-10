@@ -138,16 +138,3 @@ class DataCsv:
         target_col = 'classtype_v1'
         dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)
         return dati
-
-
-
-# Esecuzione
-
-nomefile = './dati/version_1.csv'
-
-opener = scegli_opener(nomefile)
-
-dati = DataCsv(opener,nomefile)
-tupla = dati.load()
-data_unico = unificaDF(tupla[0],tupla[1])
-print(data_unico.info())
