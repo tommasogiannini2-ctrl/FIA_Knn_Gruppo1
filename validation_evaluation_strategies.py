@@ -92,10 +92,10 @@ class Evaluation:
         for threshold in thresholds:
             classe_predetta_soglia = (prob_predette >= threshold)
             # ricalcolo degli elementi della matrice di confusione per la soglia corrente
-            TP = np.sum((classe_vera == 1) & (classe_predetta_soglia == 1))
-            TN = np.sum((classe_vera == 0) & (classe_predetta_soglia == 0))
-            FP = np.sum((classe_vera == 0) & (classe_predetta_soglia == 1))
-            FN = np.sum((classe_vera == 1) & (classe_predetta_soglia == 0))
+            TP = np.sum((classe_vera == 4) & (classe_predetta_soglia == 4))
+            TN = np.sum((classe_vera == 2) & (classe_predetta_soglia == 2))
+            FP = np.sum((classe_vera == 2) & (classe_predetta_soglia == 4))
+            FN = np.sum((classe_vera == 4) & (classe_predetta_soglia == 2))
 
             P = TP + FN
             N = TN + FP
