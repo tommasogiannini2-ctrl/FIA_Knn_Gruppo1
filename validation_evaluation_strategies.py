@@ -6,6 +6,7 @@ class ValidationStrategy:
         self.dati = data
 
     def Kfold(self, k_prove: int) -> list[list[pd.DataFrame]]:
+        #divido il set in k parti
         dimensione_parte = len(self.dati)//k_prove
         lista = []
         for i in range(k_prove):
@@ -17,10 +18,12 @@ class ValidationStrategy:
             test = self.dati.iloc[inizio:fine]
             training = self.dati.drop(test.index)
             lista.append([training,test])
+            #returna una lista di k coppie training e test
         return lista
 
 
     def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
+        #ripetizione di n volte l'estrazione del training set che ha una percentuale p
         lista =[]
         len_col = len(self.dati)
         indice_divisione = int(np.floor(p * len_col))
@@ -49,13 +52,16 @@ class Evaluation:
         """
         Calcola gli elementi della matrice di confusione.
         """
-        self.TP = np.sum((self.classe_vera == 1) & (self.classe_predetta == 1))
-        self.TN = np.sum((self.classe_vera == 0) & (self.classe_predetta == 0))
-        self.FP = np.sum((self.classe_vera == 0) & (self.classe_predetta == 1))
-        self.FN = np.sum((self.classe_vera == 1) & (self.classe_predetta == 0))
+        self.TP = np.sum((self.classe_vera == 4) & (self.classe_predetta == 4))
+        self.TN = np.sum((self.classe_vera == 2) & (self.classe_predetta == 2))
+        self.FP = np.sum((self.classe_vera == 2) & (self.classe_predetta == 4))
+        self.FN = np.sum((self.classe_vera == 4) & (self.classe_predetta == 2))
 
+        #calcolo dei positivi totali
         self.P = self.TP + self.FN
+        #calcolo dei negativi totali
         self.N = self.TN + self.FP
+        #numero casi totali
         self.Total = len(self.classe_vera)
 
     def accuracy_rate(self):

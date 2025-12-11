@@ -106,6 +106,17 @@ class KNNClassifier:
 
         return k_best
 
+    def  restituzione_classepredetta_probabilitaclasse4(self,):
+        #questo metodo serve per il calcolo delle metriche, in quanto necessitano di questi due dati
+        classe_predetta=[]
+        prob_class_4=[]
+        X_test = self.x_test
+        for campione in X_test:
+            _classe_predetta, prob_classe_2,_proba_class_4 = self.classificazione(campione)
+        classe_predetta.append(_classe_predetta)
+        prob_class_4.append(_proba_class_4)
+
+        return classe_predetta, prob_class_4
 
 nomefile = './dati/version_1.csv'
 
