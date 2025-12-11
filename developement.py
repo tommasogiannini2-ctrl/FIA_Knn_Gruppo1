@@ -1,5 +1,4 @@
-import numpy as np
-import pandas as pd
+
 from Prepocessing import *
 
 class KNNClassifier:
@@ -8,6 +7,7 @@ class KNNClassifier:
         # Inizzializzo
         self.db_features = db_features
         self.db_classe = db_classe
+        #inserisci la percentuale di training sed che si desidera
         self.x_training,self.y_training = self.training_set(0.9)
         self.x_test , self.y_test= self.test_set()
         self.k= self.knn_k_ottimale(self.db_features, self.db_classe)
@@ -116,7 +116,7 @@ tupla = dati.load()
 data_unico = unificaDF(tupla[0],tupla[1])
 classificatore=KNNClassifier(tupla[0],tupla[1])
 
-print(f"\n--- VALUTAZIONE FINALE ---")
+print(f"\n K OTTIMALE")
 print(f"K Ottimale trovato dal modello: k={classificatore.k}")
 
 
