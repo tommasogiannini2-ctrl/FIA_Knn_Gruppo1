@@ -11,15 +11,23 @@ class XLSOpener(Abstract_opener):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         self.data=pd.read_excel(dataframe_path)
         return self.data
+
+
 class CSVOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
-        # 1. Gestione di '?' come NaN
+        # Gestione di '?' come NaN
         self.data = pd.read_csv(dataframe_path, na_values=['?'])
 
         for col in self.data.columns:
+            #controlla se i numeri siano decimali con il punto e non con la virgola, in caso sostituisce
+            if self.data[col].dtypes == 'object':
+                self.data[col]=self.data[col].str.replace(',','.',regex=False)
+                
             # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
             self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data
+
+
 
 class SQLOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
