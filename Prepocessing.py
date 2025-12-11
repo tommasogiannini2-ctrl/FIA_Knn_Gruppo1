@@ -73,8 +73,12 @@ class DataCsv:
         self.data=self.elimina_classnull(self.data)
         self.classe = self.estrai_classe(self.data)
         self.data = self.elimina_features(self.data)
-        self.data=self.elimina_recordnull(self.data)
+        self.data = self.elimina_recordnull(self.data)
         self.data = self.elimina_nulli(self.data)
+
+
+
+
         print('conta quanti null ci sno per ogni colonna')
         print(self.data.isnull().sum())
 
@@ -149,13 +153,5 @@ class DataCsv:
 
 
 
-# Esecuzione
 
-nomefile = './dati/version_1.csv'
 
-opener = scegli_opener(nomefile)
-
-dati = DataCsv(opener,nomefile)
-tupla = dati.load()
-data_unico = unificaDF(tupla[0],tupla[1])
-print(data_unico.info())
