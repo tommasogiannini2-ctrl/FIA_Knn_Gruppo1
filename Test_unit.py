@@ -1,6 +1,6 @@
 import unittest
 from Prepocessing import *
-from evaluation_strategies import *
+from validation_evaluation_strategies import *
 
 
 class TestDataPreprocessing(unittest.TestCase):
@@ -32,7 +32,7 @@ class TestDataPreprocessing(unittest.TestCase):
         """
         Verifica che i dataframe di test e training hanno intersezione vuota
         """
-        df = EvaluationStrategy(self.df_prova)
+        df = ValidationStrategy(self.df_prova)
         l = df.RandomSubsampling(1, 0.8)
         coppiadf = l[0]
         training, test = coppiadf[0], coppiadf[1]
@@ -47,7 +47,7 @@ class TestDataPreprocessing(unittest.TestCase):
         Verifica che i dataframe di test e training hanno intersezione vuota, per le due divisioni.
         Verifica inoltre che i due datafram di test hanno intersezione vuota
         """
-        df = EvaluationStrategy(self.df_prova)
+        df = ValidationStrategy(self.df_prova)
         l = df.Kfold(2)
 
         coppia1 = l[0]

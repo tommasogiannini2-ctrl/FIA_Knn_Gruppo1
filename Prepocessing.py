@@ -22,7 +22,7 @@ class CSVOpener(Abstract_opener):
             #controlla se i numeri siano decimali con il punto e non con la virgola, in caso sostituisce
             if self.data[col].dtypes == 'object':
                 self.data[col]=self.data[col].str.replace(',','.',regex=False)
-                
+
             # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
             self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data

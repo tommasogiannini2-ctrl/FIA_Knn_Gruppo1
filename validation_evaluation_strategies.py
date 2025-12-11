@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-class EvaluationStrategy:
+class ValidationStrategy:
     def __init__(self, data):
         self.dati = data
 
@@ -33,7 +33,7 @@ class EvaluationStrategy:
         #ritorna una lista di liste dove in ogni lista interna c'è training e test
         return lista
 
-class Metriche:
+class Evaluation:
     """
     Classe per calcolare metriche di valutazione.
     """
