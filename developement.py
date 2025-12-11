@@ -129,7 +129,3 @@ classificatore=KNNClassifier(tupla[0],tupla[1])
 
 print(f"\n K OTTIMALE")
 print(f"K Ottimale trovato dal modello: k={classificatore.k}")
-
-
-
-

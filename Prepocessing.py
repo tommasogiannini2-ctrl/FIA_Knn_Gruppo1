@@ -150,8 +150,3 @@ class DataCsv:
         target_col = 'classtype_v1'
         dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)
         return dati
-
-
-
-
-
