@@ -2,7 +2,6 @@ import pandas as pd
 from abc import ABC
 import numpy as np
 
-
 class Abstract_opener(ABC):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         pass
@@ -11,7 +10,6 @@ class XLSOpener(Abstract_opener):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         self.data=pd.read_excel(dataframe_path)
         return self.data
-
 
 class CSVOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
@@ -26,8 +24,6 @@ class CSVOpener(Abstract_opener):
             # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
             self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data
-
-
 
 class SQLOpener(Abstract_opener):
     def open(self, dataframe_path: str)->pd.DataFrame|None:
@@ -53,14 +49,11 @@ def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)->pd.DataFrame 
     df_completo[NOME_COLONNA_TARGET] = dataframe2
     return df_completo
 
-
 class Data:
-
     # Metodo costruttore
     def __init__(self,Opener:Abstract_opener,dataframe_path:str)->None:
         self.opener=Opener
         self.path=dataframe_path
-
 
     def load(self) -> list[pd.DataFrame]:
         self.data = self.opener.open(self.path)
@@ -75,9 +68,6 @@ class Data:
         self.data = self.elimina_recordnull(self.data)
         self.data = self.elimina_nulli(self.data)
 
-
-
-
         print('conta quanti null ci sno per ogni colonna')
         print(self.data.isnull().sum())
 
@@ -87,14 +77,12 @@ class Data:
         print(self.classe.info())
         return [self.data, self.classe]
 
-
     # Metodo per eliminare duplicati
     def elimina_duplicati(self, dati):
         dati = dati.drop_duplicates()
         # Riassegna gli indici dopo l'eliminazione
         dati = dati.reset_index(drop=True)
         return dati
-
 
     #Metodo che tiene solo le features rilevanti:Clump Thickness,Uniformity of Cell Size
     #Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size
@@ -103,8 +91,8 @@ class Data:
         features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate','classtype_v1']
         for feature in features_eliminate:
             dati= dati.drop(columns=[feature],axis=1)
-
         return dati
+
     #Metodo che elimina le righe a cui corrisponde un valore nullo nella colonna classtype_v1
     def elimina_classnull(self,dati):
         target_col = 'classtype_v1'
@@ -113,13 +101,10 @@ class Data:
         dati = dati.dropna(subset=[target_col]).reset_index(drop=True)
         return dati
 
-
     def elimina_recordnull(self,dati):
-
         N_max_null=4
         #il thresh garantisce che chi non soddisfa la condizione di minimi valori non nulli venga eliminato
         dati = dati.dropna(thresh=len(dati.columns) - N_max_null).reset_index(drop=True)
-
         return dati
 
     #metodo eliminazione dei valori nulli (Nan e <null>)
@@ -128,7 +113,6 @@ class Data:
         for col in self.data.columns:
             mode_value = self.data[col].mode()[0]
             dati.loc[:, col] = dati.loc[:, col].fillna(mode_value)
-
         return dati
 
     def estrai_classe(self,data):
@@ -136,15 +120,13 @@ class Data:
         return classe
 
     def elimina_outrange_features(self, dati):
-
         colonna_target = 'classtype_v1'
-
         feature_cols = [col for col in dati.columns if col != colonna_target]
-
         for col in feature_cols:
          # Qui il confronto è sicuro perché il CSVOpener ha già convertito tutto in numerico.
             dati[col] = dati[col].mask((dati[col] < 1) | (dati[col] > 10), np.nan)
         return dati
+
     def elimina_outrange_class(self, dati):
         target_col = 'classtype_v1'
         dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)

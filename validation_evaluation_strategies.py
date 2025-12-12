@@ -21,7 +21,6 @@ class ValidationStrategy:
             #returna una lista di k coppie training e test
         return lista
 
-
     def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
         #ripetizione di n volte l'estrazione del training set che ha una percentuale p
         lista =[]
@@ -40,7 +39,6 @@ class Evaluation:
     """
     Classe per calcolare metriche di valutazione.
     """
-
     def __init__(self, classe_vera, classe_predetta):
         self.classe_vera = classe_vera
         self.classe_predetta = classe_predetta

@@ -1,4 +1,3 @@
-
 from Prepocessing import *
 
 class KNNClassifier:
@@ -63,12 +62,10 @@ class KNNClassifier:
         for k_attuale in range(3,K_max, 2):
             self.k = k_attuale
             errori = 0
-
             for x_campione, y_reale in zip(self.x_training,self.y_training):
                 classe_predetta, prob_2, prob_4 = self.classificazione(x_campione)
                 if classe_predetta != y_reale:
                     errori += 1
-
             tasso_errore_percent = errori / len(self.x_test)*100
             lista_k.append(k_attuale)
             lista_errori.append(tasso_errore_percent)

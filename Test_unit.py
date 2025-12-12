@@ -2,9 +2,7 @@ import unittest
 from Prepocessing import *
 from validation_evaluation_strategies import *
 
-
 class TestDataPreprocessing(unittest.TestCase):
-
     def setUp(self):
         # Inizializzazione DataFrame di prova
         data = {
