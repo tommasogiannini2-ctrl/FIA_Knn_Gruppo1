@@ -49,7 +49,7 @@ class KNNClassifier:
         # creazione DataFrame di distanze e classi
         col1 = pd.Series(distanze, name = 'distanze')
         col2 = pd.Series(self.y_training, name = 'y_training')
-        tab = pd.concat([col1, col2], axis = 1)
+        tab = pd.concat([col1, col2], axis = 1) #Controllare se concat funziona (Gabri e Flavia)
 
         # estrazione le etichette dei K vicini
         tab_ordinata = tab.sort_values(by = ['distanze'], ascending = True)
@@ -106,7 +106,7 @@ class KNNClassifier:
 
         return k_best
 
-    def  restituzione_classepredetta_probabilitaclasse4(self,):
+    def  restituzione_classepredetta_probabilitaclasse4(self):
         #questo metodo serve per il calcolo delle metriche, in quanto necessitano di questi due dati
         classe_predetta=[]
         prob_class_4=[]

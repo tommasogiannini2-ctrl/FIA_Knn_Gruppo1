@@ -46,16 +46,15 @@ def scegli_opener(dataframe_path:str)-> SQLOpener | XLSOpener | CSVOpener:
         case _:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
-def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)->pd.DataFrame:
-    dataframe_unico = pd.concat([dataframe1, dataframe2], ignore_index=True)
-    nuovo_nome = 'ClasseObiettivo'
-    colonne_attuali = dataframe_unico.columns.tolist()
-    colonne_attuali[-1] = nuovo_nome
-    dataframe_unico.columns = colonne_attuali
-    return dataframe_unico
+def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)->pd.DataFrame | None:
+    NOME_COLONNA_TARGET = 'ClasseObiettivo'
+
+    df_completo = dataframe1.copy()  # Lavora su una copia per sicurezza
+    df_completo[NOME_COLONNA_TARGET] = dataframe2
+    return df_completo
 
 
-class DataCsv:
+class Data:
 
     # Metodo costruttore
     def __init__(self,Opener:Abstract_opener,dataframe_path:str)->None:
