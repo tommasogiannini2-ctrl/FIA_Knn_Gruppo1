@@ -120,13 +120,15 @@ i Valori nulli sono risolti con sostituzione della moda perchè ritenuta più ra
 
 
 ### 2. Esecuzione del Programma (Da Definire)
-
-
-
-Il programma dovrà essere eseguito tramite il file principale `main.py` specificando i parametri richiesti dall'utente.
-
-(da implementare)
-
+Il programma dovrà essere eseguito tramite il file principale `main.py`.
+Il programma contiene 6 parser, il solo obbligatorio è '-v' che consente di scegliere se effettuare un Random Subsampling (inserire RS) o la K-Fold Cross Validation (inserire KF).
+Gli altri parser sono:
+-i, --input: richiede una striga che specifica il path del file di ingresso (Default: ./dati/version_1.csv)
+-o, --output: richiede una stringa che specifica il pth del file di uscita (Default: risultati.xlsx)
+-v, --validation: richiede di inserire RS o KF
+-K, --K_prove: richiede di inserire il numero dei K esperimenti
+-p, --percentuale_holdout: richiede di inserire la percentuale per effettuale l'Holdout
+-h, --help: consente di visualizzare tutti i comandi precententi
 
 
 ---
