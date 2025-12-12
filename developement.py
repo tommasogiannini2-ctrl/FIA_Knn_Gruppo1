@@ -117,15 +117,3 @@ class KNNClassifier:
         prob_class_4.append(_proba_class_4)
 
         return classe_predetta, prob_class_4
-
-nomefile = './dati/version_1.csv'
-
-opener = scegli_opener(nomefile)
-
-dati = DataCsv(opener,nomefile)
-tupla = dati.load()
-data_unico = unificaDF(tupla[0],tupla[1])
-classificatore=KNNClassifier(tupla[0],tupla[1])
-
-print(f"\n K OTTIMALE")
-print(f"K Ottimale trovato dal modello: k={classificatore.k}")

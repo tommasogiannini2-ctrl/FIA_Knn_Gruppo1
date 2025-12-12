@@ -45,7 +45,7 @@ class TestDataPreprocessing(unittest.TestCase):
     def test_kfold_intersection_empy(self):
         """
         Verifica che i dataframe di test e training hanno intersezione vuota, per le due divisioni.
-        Verifica inoltre che i due datafram di test hanno intersezione vuota
+        Verifica inoltre che i due dataframe di test hanno intersezione vuota
         """
         df = ValidationStrategy(self.df_prova)
         l = df.Kfold(2)
