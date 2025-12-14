@@ -69,9 +69,13 @@ class Evaluation:
         return (self.FP + self.FN) / self.Total
 
     def sensitivity(self):
+        if self.P == 0:
+            return np.nan
         return self.TP / self.P
 
     def specificity(self):
+        if self.N == 0:
+            return np.nan
         return self.TN / self.N
 
     def geometric_mean(self):
@@ -83,23 +87,23 @@ class Evaluation:
         TPR = []
         FPR = []
 
-        classe_vera = np.array(classe_vera)
+        classe_vera = (np.array(classe_vera) == 4).astype(int)
         prob_predette = np.array(prob_predette)
 
         # itera su ogni soglia per calcolare true positive rate e false positive rate
         for threshold in thresholds:
-            classe_predetta_soglia = (prob_predette >= threshold)
+            classe_predetta_soglia = (prob_predette >= threshold).astype(int)
             # ricalcolo degli elementi della matrice di confusione per la soglia corrente
-            TP = np.sum((classe_vera == 4) & (classe_predetta_soglia == 4))
-            TN = np.sum((classe_vera == 2) & (classe_predetta_soglia == 2))
-            FP = np.sum((classe_vera == 2) & (classe_predetta_soglia == 4))
-            FN = np.sum((classe_vera == 4) & (classe_predetta_soglia == 2))
+            TP = np.sum((classe_vera == 1) & (classe_predetta_soglia == 1))
+            TN = np.sum((classe_vera == 0) & (classe_predetta_soglia == 0))
+            FP = np.sum((classe_vera == 0) & (classe_predetta_soglia == 1))
+            FN = np.sum((classe_vera == 1) & (classe_predetta_soglia == 0))
 
             P = TP + FN
             N = TN + FP
 
-            TPR_p = TP / P
-            FPR_p = FP / N
+            TPR_p = TP / P if P > 0 else 0
+            FPR_p = FP / N if N > 0 else 0
 
             TPR.append(TPR_p)
             FPR.append(FPR_p)
