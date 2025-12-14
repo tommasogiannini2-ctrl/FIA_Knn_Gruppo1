@@ -27,7 +27,7 @@ class KNNClassifier:
     def classificazione(self, x) -> tuple[int,float,float]:
         distanze = []
         # per ogni campione dell'insieme di test, calcola la distanza da tutti i campioni del set di training
-        for x_training in self.x_training:
+        for x_training in self.x_training.values:
             euclidea = self.distanza_euclidea(x, x_training)
             distanze.append(euclidea)
 
