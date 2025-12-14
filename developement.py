@@ -1,4 +1,6 @@
 from Prepocessing import *
+from validation_evaluation_strategies import *
+import numpy as np
 
 class KNNClassifier:
 
@@ -27,8 +29,8 @@ class KNNClassifier:
     def classificazione(self, x) -> tuple[int,float,float]:
         distanze = []
         # per ogni campione dell'insieme di test, calcola la distanza da tutti i campioni del set di training
-        for x_training in self.x_training.values:
-            euclidea = self.distanza_euclidea(x, x_training)
+        for valori in self.x_training.values:
+            euclidea = self.distanza_euclidea(x, valori)
             distanze.append(euclidea)
 
         # creazione DataFrame di distanze e classi
@@ -59,20 +61,39 @@ class KNNClassifier:
         # K_max per la ricerca: Usiamo 51 o K_limite_superiore, scegliendo il valore più piccolo
         K_max = min(51, K_limite_superiore-1)
 
+        # copia per ripristinarlo dopo
+        x_training = self.x_training.copy()
+        y_training = self.y_training.copy()
+
+        # crea il set di validazione
+        validation_set = self.training.RandomSubsampling(1, 0.8)[0]
+        training_k = validation_set[0]
+        validation_k = validation_set[1]
+
+        self.x_training = training_k.drop(columns=['classtype_v1'])
+        self.y_training = training_k['classtype_v1']
+
+        x_validation = validation_k.drop(columns=['classtype_v1']).values
+        y_validation = validation_k['classtype_v1'].values
+
         for k_attuale in range(3,K_max, 2):
             self.k = k_attuale
             errori = 0
-            for x_campione, y_reale in zip(self.x_training,self.y_training):
+
+            for x_campione, y_reale in zip(x_validation, y_validation):
                 classe_predetta, prob_2, prob_4 = self.classificazione(x_campione)
                 if classe_predetta != y_reale:
                     errori += 1
-            tasso_errore_percent = errori / len(self.x_test)*100
+            tasso_errore_percent = errori / len(validation_k)*100
             lista_k.append(k_attuale)
             lista_errori.append(tasso_errore_percent)
 
         min_errore_valore = min(lista_errori)
         indice_min_errore = lista_errori.index(min_errore_valore)
         k_best = lista_k[indice_min_errore]
+
+        self.x_training = x_training
+        self.y_training = y_training
 
         self.k = k_best  # Imposta il k ottimale trovato sul modello
         return k_best
