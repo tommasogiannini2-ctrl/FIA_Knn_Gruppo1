@@ -2,6 +2,8 @@ from Prepocessing import *
 from developement import *
 from validation_evaluation_strategies import *
 import argparse
+import numpy as np
+import pandas as pd
 
 parser = argparse.ArgumentParser(description='Elabora un dataframe secondo il metodo KKN e calcola le metriche più comuni.')
 
@@ -12,7 +14,6 @@ parser.add_argument('-v', '--validation', type=str, default=None, required=True,
 parser.add_argument('-p', '--percentuale_holdout', type=float, default=0.8, help="Scegliere percentuale per l'holdout (Default: 0.8)")
 parser.add_argument('-K', '--K_prove', type=int, default=5, help='Scegliere il numero di esperimenti da eseguire per il Randoma Subsampling o per il K-Fold Cross Validation (Default=5')
 pars = parser.parse_args()
-
 
 pars_out = pars.output
 validation_type = pars.validation
@@ -32,6 +33,12 @@ data_unico = unificaDF(tupla[0],tupla[1])
 data = ValidationStrategy(data_unico)
 p_RandomSubsampling = 0.8
 
+lista = []
+if validation_type == 'RS':
+    lista = data.RandomSubsampling(n_prove, p_RandomSubsampling)
+elif validation_type == 'KF':
+    lista = data.Kfold(n_prove)
+
 # Divisione con holdout
 lista_holdout = data.RandomSubsampling(1,p_Holdout)
 # Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
@@ -44,11 +51,11 @@ print(coppia[0].info())
 print(coppia[1].info())
 """
 
+"""
 # Divisione training e set con il metodo Kfold
 lista_Kfold = data.Kfold(n_prove)
 # Questa lista contiene n coppie di training e test divise secondo il metodo Kfold
 
-"""
 #Ciclo per vedere se funziona tutto
 print('K FOLD---------------')
 
@@ -57,11 +64,11 @@ for i in range(n_prove):
     print(f"coppia {i + 1}")
     print(coppia[0].info())
     print(coppia[1].info())
-"""
+
 # Divisione training e set con il metodo RandomSubsampling
 lista_RS = data.RandomSubsampling(n_prove, p_RandomSubsampling)
 # Questa lista contiene n coppie di training e test divise secondo il metodo Random Subsampling
-"""
+
 #Ciclo per vedere se funziona tutto
 print('RANDOM SUBSAMPLING---------------')
 
@@ -76,6 +83,38 @@ for i in range(n_prove):
 
 #Trovata la k ottima si esegue sul test e si calcolano le metriche
 
+risultati = []
+
+for training, test in lista:
+
+    classificatore = KNNClassifier(training, test)
+    classificatore.separatore(training, test)
+
+    k_ottimale = classificatore.knn_k_ottimale()
+    y_predette, prob_class_4 = classificatore.restituzione_classepredetta_probabilitaclasse4(classificatore.x_test.values)
+
+    classe_vera = np.round(classificatore.y_test.values).astype(int)
+    classe_predetta = np.round(y_predette).astype(int)
+
+    evaluation = Evaluation(classe_vera, classe_predetta)
+    evaluation.matrice_confusione()
+
+    thresholds = np.linspace(1.0, 0.0, 1001)
+    auc = evaluation.area_under_the_curve(classificatore.y_test.values, thresholds, prob_class_4)
+
+    # Aggiungi risultati
+    risultati.append({
+        'k': k_ottimale,
+        'accuracy': evaluation.accuracy_rate(),
+        'error_rate': evaluation.error_rate(),
+        'sensitivity': evaluation.sensitivity(),
+        'specificity': evaluation.specificity(),
+        'geometric_mean': evaluation.geometric_mean(),
+        'auc': auc
+    })
+
+risultati = pd.DataFrame(risultati)
+risultati.to_excel(pars.output, index=False)
 
 #Parte che non so se serve
 #classificatore=KNNClassifier(tupla[0],tupla[1])
@@ -83,4 +122,4 @@ for i in range(n_prove):
 #print(f"\n K OTTIMALE")
 #print(f"K Ottimale trovato dal modello: k={classificatore.k}")
 
-input("Premi INVIO per chiudere...")
+#input("Premi INVIO per chiudere...")
