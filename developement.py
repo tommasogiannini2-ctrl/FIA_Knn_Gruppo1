@@ -35,7 +35,7 @@ class KNNClassifier:
 
         # creazione DataFrame di distanze e classi
         col1 = pd.Series(distanze, name = 'distanze')
-        col2 = pd.Series(self.y_training, name = 'y_training')
+        col2 = pd.Series(self.y_training.values, name = 'y_training')
         tab = pd.concat([col1, col2], axis = 1) #Controllare se concat funziona (Gabri e Flavia)
 
         # estrazione le etichette dei K vicini
@@ -66,7 +66,8 @@ class KNNClassifier:
         y_training = self.y_training.copy()
 
         # crea il set di validazione
-        validation_set = self.training.RandomSubsampling(1, 0.8)[0]
+        validation_strategy = ValidationStrategy(self.training)
+        validation_set = validation_strategy.RandomSubsampling(1, 0.8)[0]
         training_k = validation_set[0]
         validation_k = validation_set[1]
 
