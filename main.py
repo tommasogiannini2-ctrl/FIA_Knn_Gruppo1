@@ -124,7 +124,34 @@ for training, test in lista:
     })
 
 risultati = pd.DataFrame(risultati)
-risultati.to_excel(pars.output, index=False)
+metriche = risultati.columns.drop('k')
+
+lista_metrica = []
+lista_media = []
+lista_devstd = []
+
+# Calcola la media e la deviazione standard per ogni colonna
+for colonna in metriche:
+    media = risultati[colonna].mean()
+    deviazione_standard = risultati[colonna].std()
+
+    lista_metrica.append(colonna)
+    lista_media.append(media)
+    lista_devstd.append(deviazione_standard)
+
+k_medio = risultati['k'].mean()
+
+risultati_finali = pd.DataFrame({
+    'Metrica': lista_metrica,
+    'Media': lista_media,
+    'Deviazione Standard': lista_devstd
+})
+
+risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
+risultati_finali.index = risultati_finali.index + 1
+risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+
+risultati_finali.to_excel(pars.output, index=False)
 
 #Parte che non so se serve
 #classificatore=KNNClassifier(tupla[0],tupla[1])
