@@ -36,7 +36,7 @@ class KNNClassifier:
         # creazione DataFrame di distanze e classi
         col1 = pd.Series(distanze, name = 'distanze')
         col2 = pd.Series(self.y_training.values, name = 'y_training')
-        tab = pd.concat([col1, col2], axis = 1) #Controllare se concat funziona (Gabri e Flavia)
+        tab = pd.concat([col1, col2], axis = 1)
 
         # estrazione le etichette dei K vicini
         tab_ordinata = tab.sort_values(by = ['distanze'], ascending = True)
