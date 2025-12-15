@@ -79,6 +79,16 @@ for i in range(n_prove):
     print(coppia[1].info())
 """
 
+training_holdout = lista_holdout[0]
+test_holdout = lista_holdout[1]
+classificatore = KNNClassifier(training_holdout, test_holdout)
+classificatore.separatore()
+k_ott_holout = classificatore.knn_k_ottimale()
+
+
+
+
+
 #Una volta ottenuto training e set si trova la k ottima sul training
 
 #Trovata la k ottima si esegue sul test e si calcolano le metriche
@@ -88,7 +98,7 @@ risultati = []
 for training, test in lista:
 
     classificatore = KNNClassifier(training, test)
-    classificatore.separatore(training, test)
+    classificatore.separatore()
 
     k_ottimale = classificatore.knn_k_ottimale()
     y_predette, prob_class_4 = classificatore.restituzione_classepredetta_probabilitaclasse4(classificatore.x_test.values)

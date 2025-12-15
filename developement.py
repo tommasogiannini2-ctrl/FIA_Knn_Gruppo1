@@ -13,11 +13,11 @@ class KNNClassifier:
         self.y_test = None
         self.k = None
 
-    def separatore(self, training, test):
-        self.y_training = training['classtype_v1']
-        self.x_training = training.drop(columns=['classtype_v1'])
-        self.y_test = test['classtype_v1']
-        self.x_test = test.drop(columns=['classtype_v1'])
+    def separatore(self):
+        self.y_training = self.training['classtype_v1']
+        self.x_training = self.training.drop(columns=['classtype_v1'])
+        self.y_test = self.test['classtype_v1']
+        self.x_test = self.test.drop(columns=['classtype_v1'])
 
     def distanza_euclidea(self, a, b) -> float:
         # calcola la distanza euclidea tra due punti
