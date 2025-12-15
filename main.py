@@ -81,13 +81,28 @@ for i in range(n_prove):
 
 training_holdout = lista_holdout[0]
 test_holdout = lista_holdout[1]
-classificatore = KNNClassifier(training_holdout, test_holdout)
-classificatore.separatore()
-k_ott_holout = classificatore.knn_k_ottimale()
+classificatoreH = KNNClassifier(training_holdout, test_holdout)
+classificatoreH.separatore()
+k_ott_holdout = classificatoreH.knn_k_ottimale()
+y_predette, prob_class_4 = classificatoreH.restituzione_classepredetta(classificatoreH.x_test.values)
+classe_vera = np.round(classificatoreH.y_test.values).astype(int)
+classe_predetta = np.round(y_predette).astype(int)
 
+evaluation = Evaluation(classe_vera, classe_predetta)
+evaluation.matrice_confusione()
 
+thresholds = np.linspace(1.0, 0.0, 1001)
+auc = evaluation.area_under_the_curve(classificatoreH.y_test.values, thresholds, prob_class_4)
 
-
+risultatiH = {
+        'k': k_ott_holdout,
+        'accuracy': evaluation.accuracy_rate(),
+        'error_rate': evaluation.error_rate(),
+        'sensitivity': evaluation.sensitivity(),
+        'specificity': evaluation.specificity(),
+        'geometric_mean': evaluation.geometric_mean(),
+        'auc': auc
+    }
 
 #Una volta ottenuto training e set si trova la k ottima sul training
 
@@ -101,7 +116,7 @@ for training, test in lista:
     classificatore.separatore()
 
     k_ottimale = classificatore.knn_k_ottimale()
-    y_predette, prob_class_4 = classificatore.restituzione_classepredetta_probabilitaclasse4(classificatore.x_test.values)
+    y_predette, prob_class_4 = classificatore.restituzione_classepredetta(classificatore.x_test.values)
 
     classe_vera = np.round(classificatore.y_test.values).astype(int)
     classe_predetta = np.round(y_predette).astype(int)
