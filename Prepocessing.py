@@ -7,11 +7,17 @@ class Abstract_opener(ABC):
         pass
 
 class XLSOpener(Abstract_opener):
+    def __init__(self):
+        self.data= None
+
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         self.data=pd.read_excel(dataframe_path)
         return self.data
 
 class CSVOpener(Abstract_opener):
+    def __init__(self):
+        self.data= None
+
     def open(self, dataframe_path: str)->pd.DataFrame|None:
         # Gestione di '?' come NaN
         self.data = pd.read_csv(dataframe_path, na_values=['?'])
@@ -26,6 +32,9 @@ class CSVOpener(Abstract_opener):
         return self.data
 
 class SQLOpener(Abstract_opener):
+    def __init__(self):
+        self.data= None
+
     def open(self, dataframe_path: str)->pd.DataFrame|None:
         self.data = pd.read_sql(dataframe_path)
         return self.data
@@ -42,7 +51,7 @@ def scegli_opener(dataframe_path:str)-> SQLOpener | XLSOpener | CSVOpener:
         case _:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
-def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)->pd.DataFrame | None:
+def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.Series)->pd.DataFrame | None:
     NOME_COLONNA_TARGET = 'classtype_v1'
 
     df_completo = dataframe1.copy()  # Lavora su una copia per sicurezza
