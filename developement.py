@@ -107,3 +107,29 @@ class KNNClassifier:
             prob_class_4.append(_proba_class_4)
 
         return classe_predetta, prob_class_4
+
+
+def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict | None:
+    classificatore = KNNClassifier(dataframe1, dataframe2)
+    classificatore.separatore()
+    k_ottimale = classificatore.knn_k_ottimale()
+    y_predette, prob_class_4 = classificatore.restituzione_classepredetta(classificatore.x_test.values)
+    classe_vera = np.round(classificatore.y_test.values).astype(int)
+    classe_predetta = np.round(y_predette).astype(int)
+
+    evaluation = Evaluation(classe_vera, classe_predetta)
+    evaluation.matrice_confusione()
+
+    thresholds = np.linspace(1.0, 0.0, 1001)
+    auc = evaluation.area_under_the_curve(classificatore.y_test.values, thresholds, prob_class_4)
+
+    risultati = {
+        'k': k_ottimale,
+        'accuracy': evaluation.accuracy_rate(),
+        'error_rate': evaluation.error_rate(),
+        'sensitivity': evaluation.sensitivity(),
+        'specificity': evaluation.specificity(),
+        'geometric_mean': evaluation.geometric_mean(),
+        'auc': auc
+    }
+    return risultati
