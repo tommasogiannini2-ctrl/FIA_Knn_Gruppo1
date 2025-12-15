@@ -133,3 +133,34 @@ def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict 
         'auc': auc
     }
     return risultati
+
+def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
+    risultati = pd.DataFrame(lista_ris)
+    metriche = risultati.columns.drop('k')
+
+    # Medie delle metriche
+    lista_metrica = []
+    lista_media = []
+    lista_devstd = []
+
+    # Calcola la media e la deviazione standard per ogni colonna
+    for colonna in metriche:
+        media = risultati[colonna].mean()
+        deviazione_standard = risultati[colonna].std()
+
+        lista_metrica.append(colonna)
+        lista_media.append(media)
+        lista_devstd.append(deviazione_standard)
+
+    k_medio = risultati['k'].mean()
+
+    risultati_finali = pd.DataFrame({
+        'Metrica': lista_metrica,
+        'Media': lista_media,
+        'Deviazione Standard': lista_devstd
+    })
+
+    risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
+    risultati_finali.index = risultati_finali.index + 1
+    risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+    return risultati_finali

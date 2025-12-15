@@ -33,6 +33,9 @@ data_unico = unificaDF(tupla[0],tupla[1])
 data = ValidationStrategy(data_unico)
 p_RandomSubsampling = 0.8
 
+# Divisione con holdout
+lista_holdout = data.RandomSubsampling(1,p_Holdout)
+# Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
 
 if validation_type == 'RS':
     lista = data.RandomSubsampling(n_prove, p_RandomSubsampling)
@@ -41,10 +44,6 @@ elif validation_type == 'KF':
 else:
     lista = []
     print('La lista è vuota')
-
-# Divisione con holdout
-lista_holdout = data.RandomSubsampling(1,p_Holdout)
-# Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
 
 """
 Controllo sulle dimensioni
@@ -88,44 +87,17 @@ training_holdout = coppia_holdout[0]
 test_holdout = coppia_holdout[1]
 risultati_Holdout = calcolo_metriche(training_holdout, test_holdout)
 
-# Calcolo metriche per RS o KF
+# Calcolo metriche per ogni esperimento RS o KF
 risultati = []
 for i in range(n_prove):
-    # la lista non è mai non inizializzata
     coppia = lista[i]
     training = coppia[0]
     test = coppia[1]
     ris = calcolo_metriche(training, test)
     risultati.append(ris)
 
-risultati = pd.DataFrame(risultati)
-metriche = risultati.columns.drop('k')
-
-# Medie delle metriche
-lista_metrica = []
-lista_media = []
-lista_devstd = []
-
-# Calcola la media e la deviazione standard per ogni colonna
-for colonna in metriche:
-    media = risultati[colonna].mean()
-    deviazione_standard = risultati[colonna].std()
-
-    lista_metrica.append(colonna)
-    lista_media.append(media)
-    lista_devstd.append(deviazione_standard)
-
-k_medio = risultati['k'].mean()
-
-risultati_finali = pd.DataFrame({
-    'Metrica': lista_metrica,
-    'Media': lista_media,
-    'Deviazione Standard': lista_devstd
-})
-
-risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
-risultati_finali.index = risultati_finali.index + 1
-risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+# Calcolo medie e deviazioni standard delle metriche
+risultati_finali = calcolo_media_stddev_metriche(risultati)
 
 # Output in un file Excel
 risultati_finali.to_excel(pars.output, index=False)

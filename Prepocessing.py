@@ -2,11 +2,11 @@ import pandas as pd
 from abc import ABC
 import numpy as np
 
-class Abstract_opener(ABC):
+class AbstractOpener(ABC):
     def open(self,dataframe_path:str)->pd.DataFrame|None:
         pass
 
-class XLSOpener(Abstract_opener):
+class XLSOpener(AbstractOpener):
     def __init__(self):
         self.data= None
 
@@ -14,7 +14,7 @@ class XLSOpener(Abstract_opener):
         self.data=pd.read_excel(dataframe_path)
         return self.data
 
-class CSVOpener(Abstract_opener):
+class CSVOpener(AbstractOpener):
     def __init__(self):
         self.data= None
 
@@ -31,38 +31,41 @@ class CSVOpener(Abstract_opener):
             self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data
 
-class SQLOpener(Abstract_opener):
+class JSONOpener(AbstractOpener):
     def __init__(self):
         self.data= None
 
     def open(self, dataframe_path: str)->pd.DataFrame|None:
-        self.data = pd.read_sql(dataframe_path)
+        self.data = pd.read_json(dataframe_path)
         return self.data
 
-def scegli_opener(dataframe_path:str)-> SQLOpener | XLSOpener | CSVOpener:
+def scegli_opener(dataframe_path:str)-> JSONOpener | XLSOpener | CSVOpener:
     ext=dataframe_path.split('.')[-1]
     match ext:
         case 'csv':
             return CSVOpener()
+        case 'txt':
+            return CSVOpener()
         case 'xls':
             return XLSOpener()
-        case 'sql':
-            return SQLOpener()
+        case 'json':
+            return JSONOpener()
         case _:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
-def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.Series)->pd.DataFrame | None:
+# Unifica il dataframe delle feature con quello della classe obbiettivo
+def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.Series | pd.DataFrame)->pd.DataFrame | None:
     NOME_COLONNA_TARGET = 'classtype_v1'
-
-    df_completo = dataframe1.copy()  # Lavora su una copia per sicurezza
-    df_completo[NOME_COLONNA_TARGET] = dataframe2
-    return df_completo
+    dataframe1[NOME_COLONNA_TARGET] = dataframe2
+    return dataframe1
 
 class Data:
     # Metodo costruttore
-    def __init__(self,Opener:Abstract_opener,dataframe_path:str)->None:
-        self.opener=Opener
+    def __init__(self,opener:AbstractOpener,dataframe_path:str)->None:
+        self.opener=opener
         self.path=dataframe_path
+        self.classe = None
+        self.data = None
 
     def load(self) -> list[pd.DataFrame]:
         self.data = self.opener.open(self.path)
@@ -73,7 +76,7 @@ class Data:
 
         self.data=self.elimina_classnull(self.data)
         self.data = self.elimina_recordnull(self.data)
-        self.classe = self.estrai_classe(self.data)
+        self.classe = self.estrai_classe()
         self.data = self.elimina_features(self.data)
         self.data = self.elimina_nulli(self.data)
 
@@ -108,6 +111,9 @@ class Data:
         righe_prima = len(dati)
         # Rimuove le righe dove il valore nella colonna 'classtype_v1' è nullo (NaN)
         dati = dati.dropna(subset=[target_col]).reset_index(drop=True)
+        righe_dopo = len(dati)
+        if righe_dopo > righe_prima:
+            print("ERRORE: le righe dopo togliere i null sono di più di quelle originali")
         return dati
 
     def elimina_recordnull(self,dati):
@@ -124,7 +130,7 @@ class Data:
             dati.loc[:, col] = dati.loc[:, col].fillna(mode_value)
         return dati
 
-    def estrai_classe(self,data):
+    def estrai_classe(self):
         classe= self.data['classtype_v1']
         return classe
 
