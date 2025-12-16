@@ -1,5 +1,6 @@
 from validation_evaluation_strategies import *
 import numpy as np
+import pandas as pd
 
 class KNNClassifier:
 
@@ -151,7 +152,7 @@ def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
         lista_media.append(media)
         lista_devstd.append(deviazione_standard)
 
-    k_medio = risultati['k'].mode()
+    k_mode = risultati['k'].mode()[0]
 
     risultati_finali = pd.DataFrame({
         'Metrica': lista_metrica,
@@ -159,8 +160,30 @@ def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
         'Deviazione Standard': lista_devstd
     })
 
-    risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
+    risultati_finali.loc[-1] = ['k', k_mode, np.nan]
     risultati_finali.index = risultati_finali.index + 1
     risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
 
     return risultati_finali
+
+
+def unisci_risultati(lista_1:dict,lista_2:list, dataframe:pd.DataFrame)-> pd.DataFrame:
+    #lista 1 è la lista dei risultati di holdout
+    colonna_H=pd.Series(lista_1,name='Metriche Holdout')
+    nuove_colonne=[]
+    for i in range(len(lista_2)):
+        nuove_colonne.append(f"Metriche esperimento {i+1}")
+    dataframe_n = pd.DataFrame(lista_2)
+    dataframe_nT=dataframe_n.T
+    dataframe_nT.columns=nuove_colonne
+
+    data_tot=pd.concat([colonna_H,dataframe_nT],axis=1)
+    df_aggiuntivo_allineato = dataframe.set_index('Metrica')
+    df_aggiuntivo_allineato.columns = ['Media', 'Deviazione Standard']
+    data_finale = pd.concat([data_tot, df_aggiuntivo_allineato], axis=1)
+    data_finale = data_finale.reset_index().rename(columns={'index': 'Metrica'})
+    return data_finale
+
+
+
+

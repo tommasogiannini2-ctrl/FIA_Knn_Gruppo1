@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description='Elabora un dataframe secondo il me
 
 # definisce l'argomento per il file di ingresso e di uscita con un valore di default
 parser.add_argument('-i', '--input', type=str, default='dati/version_1.csv', help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
-parser.add_argument('-o', '--output', type=str, default='risultati.xlsx',help='Inserire percorso del file JSON di uscita (Default: risultati.xlsx)')
+parser.add_argument('-o', '--output', type=str, default='risultati/risultati.xlsx',help='Inserire percorso del file JSON di uscita (Default: risultati.xlsx)')
 parser.add_argument('-v', '--validation', type=str, default=None, required=True, choices=['RS','KF'], help='Scegliere il metodo di validazione da eseguire (Inserire RS per eseguire il Random Subsampling o KF per eseguire il K-Fold Cross Validation)')
 parser.add_argument('-p', '--percentuale_holdout', type=float, default=0.8, help="Scegliere percentuale per l'holdout (Default: 0.8)")
 parser.add_argument('-K', '--K_prove', type=int, default=5, help='Scegliere il numero di esperimenti da eseguire per il Randoma Subsampling o per il K-Fold Cross Validation (Default=5)')
@@ -99,5 +99,8 @@ for i in range(n_prove):
 # Calcolo medie e deviazioni standard delle metriche
 risultati_finali = calcolo_media_stddev_metriche(risultati)
 
+
+r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
 # Output in un file Excel
-risultati_finali.to_excel(pars.output, index=False)
+r_tot.to_excel(pars.output, index=False)
+print(f"I risultati vengono salvati in {pars.output}")
