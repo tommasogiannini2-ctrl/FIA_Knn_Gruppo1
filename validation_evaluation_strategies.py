@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from developement import *
+from development import *
 
 class ValidationStrategy:
     def __init__(self, data):
@@ -50,6 +50,8 @@ class Evaluation:
         self.P = None
         self.N = None
         self.Total= None
+        self.confusion_matrix = None
+
         if self.classe_predetta is not None:
             self.matrice_confusione()
 
@@ -68,6 +70,9 @@ class Evaluation:
         self.N = self.TN + self.FP
         #numero casi totali
         self.Total = len(self.classe_vera)
+
+        self.confusion_matrix = np.array([[self.TN, self.FP], [self.FN, self.TP]])
+        return self.confusion_matrix
 
     def accuracy_rate(self):
         return (self.TP + self.TN) / self.Total
@@ -90,14 +95,13 @@ class Evaluation:
         specificity = self.specificity()
         return np.sqrt(sensitivity * specificity)
 
-    def area_under_the_curve(self, classe_vera, thresholds, prob_predette):
+    def roc_curve(self, classe_vera, thresholds, prob_predette):
         TPR = []
         FPR = []
 
-        classe_vera = np.where(np.array(classe_vera) == 4,1,0)
+        classe_vera = np.where(np.array(classe_vera) == 4, 1, 0)
         prob_predette = np.array(prob_predette)
 
-        # itera su ogni soglia per calcolare true positive rate e false positive rate
         for threshold in thresholds:
             classe_predetta_soglia = (prob_predette >= threshold).astype(int)
             # ricalcolo degli elementi della matrice di confusione per la soglia corrente
@@ -115,17 +119,22 @@ class Evaluation:
             TPR.append(TPR_p)
             FPR.append(FPR_p)
 
-        # ordina i punti in base a FPR
+        # Ordiniamo per FPR per assicurarci che il grafico e l'AUC siano corretti
         indici = np.argsort(FPR)
         FPR_sorted = np.array(FPR)[indici]
         TPR_sorted = np.array(TPR)[indici]
 
-        # calcolo dell'AUC utilizzando il metodo del trapezio
-        auc = 0
-        for i in range(len(FPR_sorted) - 1):
-            FPR_trap = FPR_sorted[i + 1] - FPR_sorted[i]
-            TPR_trap = (TPR_sorted[i] + TPR_sorted[i + 1]) / 2
-            area_trapezio = FPR_trap * TPR_trap
-            auc += area_trapezio
+        return FPR_sorted, TPR_sorted
 
+    def area_under_the_curve(self, fpr, tpr):
+        # calcolo dell'AUC utilizzando il metodo del trapezio
+        fpr = np.array(fpr)
+        tpr = np.array(tpr)
+
+        auc = 0.0
+        for i in range(len(fpr) - 1):
+            base = fpr[i + 1] - fpr[i]
+            altezza_media = (tpr[i] + tpr[i + 1]) / 2.0
+            auc += base * altezza_media
         return auc
+
