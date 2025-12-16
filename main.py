@@ -1,5 +1,5 @@
 from Prepocessing import *
-from developement import *
+from development import *
 from validation_evaluation_strategies import *
 import argparse
 import numpy as np
@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description='Elabora un dataframe secondo il me
 
 # definisce l'argomento per il file di ingresso e di uscita con un valore di default
 parser.add_argument('-i', '--input', type=str, default='dati/version_1.csv', help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
-parser.add_argument('-o', '--output', type=str, default='risultati/risultati.xlsx',help='Inserire percorso del file JSON di uscita (Default: risultati.xlsx)')
+parser.add_argument('-o', '--output', type=str, default='risultati/risultati.xlsx',help='Inserire percorso del file excel di uscita (Default: risultati.xlsx)')
 parser.add_argument('-v', '--validation', type=str, default=None, required=True, choices=['RS','KF'], help='Scegliere il metodo di validazione da eseguire (Inserire RS per eseguire il Random Subsampling o KF per eseguire il K-Fold Cross Validation)')
 parser.add_argument('-p', '--percentuale_holdout', type=float, default=0.8, help="Scegliere percentuale per l'holdout (Default: 0.8)")
 parser.add_argument('-K', '--K_prove', type=int, default=5, help='Scegliere il numero di esperimenti da eseguire per il Randoma Subsampling o per il K-Fold Cross Validation (Default=5)')
@@ -85,7 +85,12 @@ for i in range(n_prove):
 coppia_holdout = lista_holdout[0]
 training_holdout = coppia_holdout[0]
 test_holdout = coppia_holdout[1]
-risultati_Holdout = calcolo_metriche(training_holdout, test_holdout)
+risultati_Holdout, evaluation_holdout = calcolo_metriche(training_holdout, test_holdout)
+
+# Grafici Holdout
+plotter = Plot()
+plotter.plot_matrice_confusione(evaluation_holdout.confusion_matrix)
+plotter.plot_roc_curve(evaluation_holdout.FPR, evaluation_holdout.TPR, risultati_Holdout['auc'])
 
 # Calcolo metriche per ogni esperimento RS o KF
 risultati = []
@@ -97,10 +102,12 @@ for i in range(n_prove):
     risultati.append(ris)
 
 # Calcolo medie e deviazioni standard delle metriche
-risultati_finali = calcolo_media_stddev_metriche(risultati)
-
-
-r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
+risultati_metriche = pd.DataFrame([r[0] for r in risultati]) #r[0]: metriche, r[1]: oggetto evaluation
+risultati_finali = calcolo_media_stddev_metriche(risultati_metriche)
+r_tot = unisci_risultati(risultati_Holdout, risultati_metriche, risultati_finali)
 # Output in un file Excel
 r_tot.to_excel(pars.output, index=False)
 print(f"I risultati vengono salvati in {pars.output}")
+
+# Grafico RS/KF
+plotter.plot_distribuzione_performance(risultati_metriche)
