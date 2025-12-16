@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from developement import *
 
 class ValidationStrategy:
     def __init__(self, data):
@@ -128,3 +129,60 @@ class Evaluation:
             auc += area_trapezio
 
         return auc
+
+def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict | None:
+    classificatore = KNNClassifier(dataframe1, dataframe2)
+    classificatore.separatore()
+    k_ottimale = classificatore.knn_k_ottimale()
+    y_predette, prob_class_4 = classificatore.restituzione_classepredetta(classificatore.x_test.values)
+    classe_vera = np.round(classificatore.y_test.values).astype(int)
+    classe_predetta = np.round(y_predette).astype(int)
+
+    evaluation = Evaluation(classe_vera, classe_predetta)
+    evaluation.matrice_confusione()
+
+    thresholds = np.linspace(1.0, 0.0, 1001)
+    auc = evaluation.area_under_the_curve(classificatore.y_test.values, thresholds, prob_class_4)
+
+    risultati = {
+        'k': k_ottimale,
+        'accuracy': evaluation.accuracy_rate(),
+        'error_rate': evaluation.error_rate(),
+        'sensitivity': evaluation.sensitivity(),
+        'specificity': evaluation.specificity(),
+        'geometric_mean': evaluation.geometric_mean(),
+        'auc': auc
+    }
+    return risultati
+
+def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
+    risultati = pd.DataFrame(lista_ris)
+    metriche = risultati.columns.drop('k')
+
+    # Medie delle metriche
+    lista_metrica = []
+    lista_media = []
+    lista_devstd = []
+
+    # Calcola la media e la deviazione standard per ogni colonna
+    for colonna in metriche:
+        media = risultati[colonna].mean()
+        deviazione_standard = risultati[colonna].std()
+
+        lista_metrica.append(colonna)
+        lista_media.append(media)
+        lista_devstd.append(deviazione_standard)
+
+    k_medio = risultati['k'].mode()
+
+    risultati_finali = pd.DataFrame({
+        'Metrica': lista_metrica,
+        'Media': lista_media,
+        'Deviazione Standard': lista_devstd
+    })
+
+    risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
+    risultati_finali.index = risultati_finali.index + 1
+    risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+
+    return risultati_finali
