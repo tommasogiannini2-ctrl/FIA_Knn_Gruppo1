@@ -1,4 +1,3 @@
-from Prepocessing import *
 from validation_evaluation_strategies import *
 import numpy as np
 
@@ -26,7 +25,7 @@ class KNNClassifier:
         #b-> saranno le features di x_training
         return np.sqrt(np.sum((a - b)**2))
 
-    def classificazione(self, x) -> tuple[int,float,float]:
+    def classificazione(self, x) -> tuple[int,float]:
         distanze = []
         # per ogni campione dell'insieme di test, calcola la distanza da tutti i campioni del set di training
         for valori in self.x_training.values:
@@ -40,19 +39,17 @@ class KNNClassifier:
 
         # estrazione le etichette dei K vicini
         tab_ordinata = tab.sort_values(by = ['distanze'], ascending = True)
-        indici_k = tab_ordinata.head(self.k)
+        indici_k = tab_ordinata.iloc[:self.k]
 
         # estrazione della classe più frequente
         colonna_classi = indici_k['y_training']
         conteggio_classi = colonna_classi.value_counts()
         classe_maggiore = conteggio_classi.index[0]
 
-        classe_2 = conteggio_classi.get(2, 0)
-        prob_predetta_2 = classe_2/ self.k
         classe_4=conteggio_classi.get(4, 0)
         prob_predetta_4 = classe_4/ self.k
 
-        return classe_maggiore, prob_predetta_2, prob_predetta_4
+        return classe_maggiore, prob_predetta_4
 
     def knn_k_ottimale(self)->int:
         lista_k = []
@@ -82,7 +79,7 @@ class KNNClassifier:
             errori = 0
 
             for x_campione, y_reale in zip(x_validation, y_validation):
-                classe_predetta, prob_2, prob_4 = self.classificazione(x_campione)
+                classe_predetta, prob_4 = self.classificazione(x_campione)
                 if classe_predetta != y_reale:
                     errori += 1
             tasso_errore_percent = errori / len(validation_k)*100
@@ -99,14 +96,71 @@ class KNNClassifier:
         self.k = k_best  # Imposta il k ottimale trovato sul modello
         return k_best
 
-    def  restituzione_classepredetta_probabilitaclasse4(self, x):
+    def  restituzione_classepredetta(self, x):
         #questo metodo serve per il calcolo delle metriche, in quanto necessitano di questi due dati
         classe_predetta=[]
         prob_class_4=[]
 
         for campione in x:
-            _classe_predetta, prob_classe_2,_proba_class_4 = self.classificazione(campione)
+            _classe_predetta, _proba_class_4 = self.classificazione(campione)
             classe_predetta.append(_classe_predetta)
             prob_class_4.append(_proba_class_4)
 
         return classe_predetta, prob_class_4
+
+
+def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict | None:
+    classificatore = KNNClassifier(dataframe1, dataframe2)
+    classificatore.separatore()
+    k_ottimale = classificatore.knn_k_ottimale()
+    y_predette, prob_class_4 = classificatore.restituzione_classepredetta(classificatore.x_test.values)
+    classe_vera = np.round(classificatore.y_test.values).astype(int)
+    classe_predetta = np.round(y_predette).astype(int)
+
+    evaluation = Evaluation(classe_vera, classe_predetta)
+    evaluation.matrice_confusione()
+
+    thresholds = np.linspace(1.0, 0.0, 1001)
+    auc = evaluation.area_under_the_curve(classificatore.y_test.values, thresholds, prob_class_4)
+
+    risultati = {
+        'k': k_ottimale,
+        'accuracy': evaluation.accuracy_rate(),
+        'error_rate': evaluation.error_rate(),
+        'sensitivity': evaluation.sensitivity(),
+        'specificity': evaluation.specificity(),
+        'geometric_mean': evaluation.geometric_mean(),
+        'auc': auc
+    }
+    return risultati
+
+def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
+    risultati = pd.DataFrame(lista_ris)
+    metriche = risultati.columns.drop('k')
+
+    # Medie delle metriche
+    lista_metrica = []
+    lista_media = []
+    lista_devstd = []
+
+    # Calcola la media e la deviazione standard per ogni colonna
+    for colonna in metriche:
+        media = risultati[colonna].mean()
+        deviazione_standard = risultati[colonna].std()
+
+        lista_metrica.append(colonna)
+        lista_media.append(media)
+        lista_devstd.append(deviazione_standard)
+
+    k_medio = risultati['k'].mean()
+
+    risultati_finali = pd.DataFrame({
+        'Metrica': lista_metrica,
+        'Media': lista_media,
+        'Deviazione Standard': lista_devstd
+    })
+
+    risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
+    risultati_finali.index = risultati_finali.index + 1
+    risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+    return risultati_finali

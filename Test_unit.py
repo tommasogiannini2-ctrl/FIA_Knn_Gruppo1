@@ -22,7 +22,7 @@ class TestDataPreprocessing(unittest.TestCase):
         """
         opener =  CSVOpener()
         non_existent_path = "path/che/non/esiste/Prova1.csv"
-        p = DataCsv(opener, non_existent_path)
+        p = Data(opener, non_existent_path)
         with self.assertRaises(FileNotFoundError):
             p.load()
 
@@ -64,6 +64,39 @@ class TestDataPreprocessing(unittest.TestCase):
 
         intersezione_test_sets = pd.merge(test1, test2, on=all_columns, how='inner', indicator=False)
         self.assertTrue(intersezione_test_sets.empty, "I Test Set dei diversi fold non sono disgiunti.")
+
+class TestMetrics(unittest.TestCase):
+    def setUp(self):
+        classe_vera = np.array([4] * 10 + [2] * 10)  # 10 Positivi, 10 Negativi
+        classe_predetta = np.array([4] * 7 + [2] * 3 + [2] * 7 + [4] * 3)  # 7 TP, 3 FN, 7 TN, 3 FP
+        self.eval_test = Evaluation(classe_vera, classe_predetta)
+
+    def test_matrice_di_confusione(self):
+        # Setup
+        assert self.eval_test.TP == 7
+        assert self.eval_test.FN == 3
+        assert self.eval_test.TN == 7
+        assert self.eval_test.FP == 3
+        assert self.eval_test.P == 10
+        assert self.eval_test.N == 10
+        assert self.eval_test.Total == 20
+
+    def test_accuracy(self):
+        #accuracy_attesa = (7 + 7) / 20  14/20 = 0.7
+        assert self.eval_test.accuracy_rate() == 0.7
+
+    def test_sensitivity(self):
+        #sensitivity_attesa = 7 / 10  # TP / P
+        assert self.eval_test.sensitivity() == 0.7
+
+    def test_specificity(self):
+        #specificity_attesa = 7 / 10  # TN / N
+        assert self.eval_test.specificity() == 0.7
+
+    def test_geometric_mean(self):
+        #geometric_mean_attesa = np.sqrt(0.7 * 0.7)  # 0.7
+        assert np.isclose(self.eval_test.geometric_mean(), 0.7)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -33,15 +33,17 @@ data_unico = unificaDF(tupla[0],tupla[1])
 data = ValidationStrategy(data_unico)
 p_RandomSubsampling = 0.8
 
-lista = []
+# Divisione con holdout
+lista_holdout = data.RandomSubsampling(1,p_Holdout)
+# Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
+
 if validation_type == 'RS':
     lista = data.RandomSubsampling(n_prove, p_RandomSubsampling)
 elif validation_type == 'KF':
     lista = data.Kfold(n_prove)
-
-# Divisione con holdout
-lista_holdout = data.RandomSubsampling(1,p_Holdout)
-# Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
+else:
+    lista = []
+    print('La lista è vuota')
 
 """
 Controllo sulle dimensioni
@@ -79,57 +81,23 @@ for i in range(n_prove):
     print(coppia[1].info())
 """
 
-training_holdout = lista_holdout[0]
-test_holdout = lista_holdout[1]
-classificatore = KNNClassifier(training_holdout, test_holdout)
-classificatore.separatore()
-k_ott_holout = classificatore.knn_k_ottimale()
+# Calcolo metriche per Holdout
+coppia_holdout = lista_holdout[0]
+training_holdout = coppia_holdout[0]
+test_holdout = coppia_holdout[1]
+risultati_Holdout = calcolo_metriche(training_holdout, test_holdout)
 
-
-
-
-
-#Una volta ottenuto training e set si trova la k ottima sul training
-
-#Trovata la k ottima si esegue sul test e si calcolano le metriche
-
+# Calcolo metriche per ogni esperimento RS o KF
 risultati = []
+for i in range(n_prove):
+    coppia = lista[i]
+    training = coppia[0]
+    test = coppia[1]
+    ris = calcolo_metriche(training, test)
+    risultati.append(ris)
 
-for training, test in lista:
+# Calcolo medie e deviazioni standard delle metriche
+risultati_finali = calcolo_media_stddev_metriche(risultati)
 
-    classificatore = KNNClassifier(training, test)
-    classificatore.separatore()
-
-    k_ottimale = classificatore.knn_k_ottimale()
-    y_predette, prob_class_4 = classificatore.restituzione_classepredetta_probabilitaclasse4(classificatore.x_test.values)
-
-    classe_vera = np.round(classificatore.y_test.values).astype(int)
-    classe_predetta = np.round(y_predette).astype(int)
-
-    evaluation = Evaluation(classe_vera, classe_predetta)
-    evaluation.matrice_confusione()
-
-    thresholds = np.linspace(1.0, 0.0, 1001)
-    auc = evaluation.area_under_the_curve(classificatore.y_test.values, thresholds, prob_class_4)
-
-    # Aggiungi risultati
-    risultati.append({
-        'k': k_ottimale,
-        'accuracy': evaluation.accuracy_rate(),
-        'error_rate': evaluation.error_rate(),
-        'sensitivity': evaluation.sensitivity(),
-        'specificity': evaluation.specificity(),
-        'geometric_mean': evaluation.geometric_mean(),
-        'auc': auc
-    })
-
-risultati = pd.DataFrame(risultati)
-risultati.to_excel(pars.output, index=False)
-
-#Parte che non so se serve
-#classificatore=KNNClassifier(tupla[0],tupla[1])
-
-#print(f"\n K OTTIMALE")
-#print(f"K Ottimale trovato dal modello: k={classificatore.k}")
-
-#input("Premi INVIO per chiudere...")
+# Output in un file Excel
+risultati_finali.to_excel(pars.output, index=False)

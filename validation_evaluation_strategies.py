@@ -42,7 +42,13 @@ class Evaluation:
     def __init__(self, classe_vera, classe_predetta):
         self.classe_vera = classe_vera
         self.classe_predetta = classe_predetta
-
+        self.TP = None
+        self.TN = None
+        self.FP = None
+        self.FN = None
+        self.P = None
+        self.N = None
+        self.Total= None
         if self.classe_predetta is not None:
             self.matrice_confusione()
 
@@ -87,7 +93,7 @@ class Evaluation:
         TPR = []
         FPR = []
 
-        classe_vera = (np.array(classe_vera) == 4).astype(int)
+        classe_vera = np.where(np.array(classe_vera) == 4,1,0)
         prob_predette = np.array(prob_predette)
 
         # itera su ogni soglia per calcolare true positive rate e false positive rate
