@@ -108,7 +108,6 @@ class KNNClassifier:
 
         return classe_predetta, prob_class_4
 
-
 def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict | None:
     classificatore = KNNClassifier(dataframe1, dataframe2)
     classificatore.separatore()
@@ -152,7 +151,7 @@ def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
         lista_media.append(media)
         lista_devstd.append(deviazione_standard)
 
-    k_medio = risultati['k'].mean()
+    k_medio = risultati['k'].mode()
 
     risultati_finali = pd.DataFrame({
         'Metrica': lista_metrica,
@@ -163,4 +162,5 @@ def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
     risultati_finali.loc[-1] = ['K Ottimale Medio', k_medio, np.nan]
     risultati_finali.index = risultati_finali.index + 1
     risultati_finali = risultati_finali.sort_index().reset_index(drop=True)
+
     return risultati_finali
