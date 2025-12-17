@@ -104,7 +104,6 @@ for i in range(n_prove):
     print(f"Ottenuti risultati per esperimento {i+1} di {validation_type}")
 
 # Calcolo medie e deviazioni standard delle metriche
-risultati_metriche = pd.DataFrame([r[0] for r in risultati]) #r[0]: metriche, r[1]: oggetto evaluation
 risultati_finali = calcolo_media_stddev_metriche(risultati)
 r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
 # Output in un file Excel
@@ -112,5 +111,5 @@ r_tot.to_excel(pars.output, index=False)
 print(f"I risultati vengono salvati in {pars.output}")
 
 # Grafico RS/KF
-plotter.plot_distribuzione_performance(risultati_metriche)
+plotter.plot_distribuzione_performance(pd.DataFrame(risultati))
 input("Preme invio per chiudere")

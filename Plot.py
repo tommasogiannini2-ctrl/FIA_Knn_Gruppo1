@@ -10,7 +10,7 @@ class Plot:
 
         plt.figure(figsize=(6, 5))
         plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
-        plt.title('Matrice di Confusione')
+        plt.title('Matrice di Confusione HOLDOUT')
         plt.colorbar()
 
         tick_marks = np.arange(len(nomi_classi))
@@ -36,7 +36,7 @@ class Plot:
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('ROC Curve')
+        plt.title('ROC Curve HOLDOUT')
         plt.legend(loc="lower right")
         plt.grid(alpha=0.3)
         plt.savefig('risultati/ROC_curve.png')
