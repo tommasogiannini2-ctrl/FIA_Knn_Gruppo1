@@ -4,6 +4,10 @@ import pandas as pd
 from Plot import *
 
 class KNNClassifier:
+    """
+    Classe in cui è sviluppato l'algoritmo KNN e il calcolo del k ottimale
+    Prende in ingresso due dataframe, uno di training e uno di test
+    """
 
     def __init__(self, training, test):
         self.training = training
@@ -15,6 +19,9 @@ class KNNClassifier:
         self.k = None
 
     def separatore(self):
+        """
+        Separa in feature e classe obiettivo entrambi i dataframe passati in ingresso alla classe
+        """
         self.y_training = self.training['classtype_v1']
         self.x_training = self.training.drop(columns=['classtype_v1'])
         self.y_test = self.test['classtype_v1']
@@ -22,14 +29,21 @@ class KNNClassifier:
 
     def distanza_euclidea(self, a, b) -> float:
         # calcola la distanza euclidea tra due punti
-        # eventualmente aggiungere le altre due
-        #a-> saranno le features di x_test
-        #b-> saranno le features di x_training
         return np.sqrt(np.sum((a - b)**2))
 
     def classificazione(self, x) -> tuple[int,float]:
+        """
+        Prende in ingresso un record x e lo classifica utilizzando l'algoritmo KNN
+        Ritorna una tupla contenente la classe predetta per il record x e la probabilità che
+        la classe predetta sia 4 (da cui si può ricavare la probabilità della classe 2)
+        """
+
+        """
+        Per ogni campione dell'insieme di training, calcola la distanza del record x 
+        dal record della classe di training
+        Ritorna un vettore delle distanze non ordinato
+        """
         distanze = []
-        # per ogni campione dell'insieme di test, calcola la distanza da tutti i campioni del set di training
         for valori in self.x_training.values:
             euclidea = self.distanza_euclidea(x, valori)
             distanze.append(euclidea)
@@ -39,7 +53,7 @@ class KNNClassifier:
         col2 = pd.Series(self.y_training.values, name = 'y_training')
         tab = pd.concat([col1, col2], axis = 1)
 
-        # estrazione le etichette dei K vicini
+        # ordina le distanze in maniera decrescente ed estrae le etichette dei K vicini
         tab_ordinata = tab.sort_values(by = ['distanze'], ascending = True)
         indici_k = tab_ordinata.iloc[:self.k]
 
@@ -54,10 +68,18 @@ class KNNClassifier:
         return classe_maggiore, prob_predetta_4
 
     def knn_k_ottimale(self)->int:
+        """
+        Questa funzione serve ad ottimizzare l'iperparametro k per svolgere l'algoritmo KNN
+        Ritorna il k ottimale facendo delle prove con vari valori di k e sceglie quello che
+        commette il numero di errori minimo (se ci sono più k con un numero minimo di errori
+        sceglie il primo)
+        """
         lista_k = []
         lista_errori = []
         K_limite_superiore = len(self.x_training)
-        # K_max per la ricerca: Usiamo 51 o K_limite_superiore, scegliendo il valore più piccolo
+        # K_max per la ricerca: Usiamo 51 o K_limite_superiore per non eseguire troppe prove
+        # e non renderlo troppo pesante computazionalmente e evitare overfitting
+        # scegliendo il valore più piccolo
         K_max = min(51, K_limite_superiore-1)
 
         # copia per ripristinarlo dopo
@@ -76,6 +98,16 @@ class KNNClassifier:
         x_validation = validation_k.drop(columns=['classtype_v1']).values
         y_validation = validation_k['classtype_v1'].values
 
+
+        """
+        ciclo che per ogni valore di k dispari esegue l'algoritmo KNN su un 
+        validationn set ottenuto suddividendo il training set in un nuovo training set
+        e validation set (con metodo Holdout e probabilità Holdout 80%) 
+        Salva gli errori che ogni k commette confrontando
+        le predizioni con il valore reale della classe obiettivo
+        Sceglie il k che ha errori minori
+        Ritorna k ottimo
+        """
         for k_attuale in range(3,K_max, 2):
             self.k = k_attuale
             errori = 0
