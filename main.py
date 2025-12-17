@@ -86,6 +86,7 @@ coppia_holdout = lista_holdout[0]
 training_holdout = coppia_holdout[0]
 test_holdout = coppia_holdout[1]
 risultati_Holdout, evaluation_holdout = calcolo_metriche(training_holdout, test_holdout)
+print("Ottenuti risultati per esperimento di Holdout")
 
 # Grafici Holdout
 plotter = Plot()
@@ -98,16 +99,18 @@ for i in range(n_prove):
     coppia = lista[i]
     training = coppia[0]
     test = coppia[1]
-    ris = calcolo_metriche(training, test)
+    ris, e = calcolo_metriche(training, test)
     risultati.append(ris)
+    print(f"Ottenuti risultati per esperimento {i+1} di {validation_type}")
 
 # Calcolo medie e deviazioni standard delle metriche
 risultati_metriche = pd.DataFrame([r[0] for r in risultati]) #r[0]: metriche, r[1]: oggetto evaluation
-risultati_finali = calcolo_media_stddev_metriche(risultati_metriche)
-r_tot = unisci_risultati(risultati_Holdout, risultati_metriche, risultati_finali)
+risultati_finali = calcolo_media_stddev_metriche(risultati)
+r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
 # Output in un file Excel
 r_tot.to_excel(pars.output, index=False)
 print(f"I risultati vengono salvati in {pars.output}")
 
 # Grafico RS/KF
 plotter.plot_distribuzione_performance(risultati_metriche)
+input("Preme invio per chiudere")

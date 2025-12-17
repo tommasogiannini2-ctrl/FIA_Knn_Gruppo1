@@ -110,7 +110,7 @@ class KNNClassifier:
 
         return classe_predetta, prob_class_4
 
-def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> dict | None:
+def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple[dict, Evaluation] | None:
     classificatore = KNNClassifier(dataframe1, dataframe2)
     classificatore.separatore()
     k_ottimale = classificatore.knn_k_ottimale()
