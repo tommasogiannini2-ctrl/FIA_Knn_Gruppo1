@@ -1,5 +1,6 @@
 # Virtual Environment
 env/
+venv/
 
 # Configurazione IDE PyCharm
 .idea/
@@ -9,5 +10,5 @@ __pycache__/
 *.pyc
 
 # Cartelle di Lavoro 
-data/
-results/
+dati/
+risultati/
