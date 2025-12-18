@@ -72,7 +72,7 @@ class KNNClassifier:
         Questa funzione serve ad ottimizzare l'iperparametro k per svolgere l'algoritmo KNN
         Ritorna il k ottimale facendo delle prove con vari valori di k e sceglie quello che
         commette il numero di errori minimo (se ci sono più k con un numero minimo di errori
-        sceglie il primo)
+        sceglie casualmente)
         """
         lista_k = []
         lista_errori = []
@@ -131,7 +131,8 @@ class KNNClassifier:
         return k_best
 
     def  restituzione_classepredetta(self, x):
-        #questo metodo serve per il calcolo delle metriche, in quanto necessitano di questi due dati
+        #questo metodo restituisce una lista di classe predette e di probabilità che la classe predetta sia 4,
+        # per ogni campione di un generico dataset
         classe_predetta=[]
         prob_class_4=[]
 
@@ -142,6 +143,11 @@ class KNNClassifier:
 
         return classe_predetta, prob_class_4
 
+"""
+Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le metriche restituendole in un dizionario.
+Le metriche sono l'accuracy, l'error rate, sensitivity, specificity, geometric mean e auc. viene inoltre restituito il k ottimo
+relativo al classificatore.
+"""
 def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple[dict, Evaluation] | None:
     classificatore = KNNClassifier(dataframe1, dataframe2)
     classificatore.separatore()
