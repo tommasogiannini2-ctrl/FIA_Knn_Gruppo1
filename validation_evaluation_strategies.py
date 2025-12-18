@@ -3,10 +3,21 @@ import numpy as np
 from development import *
 
 class ValidationStrategy:
+    """
+    Classe contenente tutti i metodi necessari per effettuare le validation strategy.
+    """
     def __init__(self, data):
         self.dati = data
 
     def Kfold(self, k_prove: int) -> list[list[pd.DataFrame]]:
+        """
+        Funzione che implementa il metodo di validazione Kfold.
+        Il dataframe originale viene diviso in K parti.
+        Verranno effettuati K esperimenti dove si avrà un blocco di test
+        e tutti gli altri saranno di training
+        :param k_prove: numero di divisioni da effettuare
+        :return: lista di liste contenenti dataframe di training e test
+        """
         #divido il set in k parti
         dimensione_parte = len(self.dati)//k_prove
         lista = []
@@ -23,6 +34,15 @@ class ValidationStrategy:
         return lista
 
     def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
+        """
+        Funzione che implementa il metodo di validazione Random subsampling.
+        Il dataframe originale viene diviso in 2 parti grazie alla percentuale p.
+        :param n: numero di prove da effettuare
+        :param p: percentuale di divisione in training e test
+        :return: lista di liste contenenti dataframe di training e test
+        Questo codice viene utilizzato anche per la validazione Holdout,
+        essa infatti è semplicemente un Random Subsampling ripetuto una volta sola
+        """
         #ripetizione di n volte l'estrazione del training set che ha una percentuale p
         lista =[]
         len_col = len(self.dati)

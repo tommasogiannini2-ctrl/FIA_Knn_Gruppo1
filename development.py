@@ -131,8 +131,13 @@ class KNNClassifier:
         return k_best
 
     def  restituzione_classepredetta(self, x):
-        #questo metodo restituisce una lista di classe predette e di probabilità che la classe predetta sia 4,
-        # per ogni campione di un generico dataset
+        """
+        Questo metodo restituisce una lista di classe predette e di probabilità che la classe predetta sia 4,
+        per ogni campione di un generico dataset
+        Prende in ingresso un dataset di feature x
+        Ritona una tupla di due liste la prima contiene tutte le predizioni per i record,
+        la seconda la probabilità che la classe predetta sia 4
+        """
         classe_predetta=[]
         prob_class_4=[]
 
@@ -143,12 +148,13 @@ class KNNClassifier:
 
         return classe_predetta, prob_class_4
 
-"""
-Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le metriche restituendole in un dizionario.
-Le metriche sono l'accuracy, l'error rate, sensitivity, specificity, geometric mean e auc. viene inoltre restituito il k ottimo
-relativo al classificatore.
-"""
+
 def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple[dict, Evaluation] | None:
+    """
+    Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le metriche restituendole in un dizionario.
+    Le metriche sono l'accuracy, l'error rate, sensitivity, specificity, geometric mean e auc.
+    Viene inoltre restituito il k ottimo relativo al classificatore.
+    """
     classificatore = KNNClassifier(dataframe1, dataframe2)
     classificatore.separatore()
     k_ottimale = classificatore.knn_k_ottimale()
@@ -175,6 +181,12 @@ def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple
     return risultati, evaluation
 
 def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
+    """
+    Questo metodo serve a calcolare media e deviazione standard delle metriche relative
+    ai k esperimenti effettuati con Kfold o Random Subsampling
+    Prende in ingresso la lista dei risultati di tutti gli esperimenti
+    Ritorna un dataframe contenete le colonne Metriche, Media e Deviazione Standard
+    """
     risultati = pd.DataFrame(lista_ris)
     metriche = risultati.columns.drop('k')
 
@@ -208,6 +220,13 @@ def calcolo_media_stddev_metriche(lista_ris: list)-> pd.DataFrame | None:
 
 
 def unisci_risultati(lista_1:dict,lista_2:list, dataframe:pd.DataFrame)-> pd.DataFrame:
+    """
+    Questa funzione unisce i risultati di tutti i test in un unico dataframe.
+    :param lista_1: Risultati dell'esperimento Holdout
+    :param lista_2: Risultati degli esperimenti con Kfold o Random Subsampling
+    :param dataframe: Media e Deviazione standard degli esperimenti Kfold o Random Subsampling
+    :return: un dataframe che contiene tutte queste informazioni in modo ordinato
+    """
     #lista 1 è la lista dei risultati di holdout
     colonna_H=pd.Series(lista_1,name='Metriche Holdout')
     nuove_colonne=[]
