@@ -194,7 +194,6 @@ class Data:
                     colonne_finali.append(col)
                     break
 
-        colonne_finali = list(dict.fromkeys(colonne_finali))
         dati = dati[colonne_finali]
         return dati
 
