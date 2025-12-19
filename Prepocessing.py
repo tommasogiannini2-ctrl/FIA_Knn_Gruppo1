@@ -165,10 +165,37 @@ class Data:
     #Metodo che tiene solo le features rilevanti:Clump Thickness,Uniformity of Cell Size
     #Uniformity of Cell Shape, Marginal Adhesion, Single Epithelial Cell Size
     #Bare Nuclei, Bland Chromatin, Normal Nucleoli, Mitoses
-    def elimina_features(self,dati):
-        features_eliminate=['Blood Pressure','Sample code number', 'Heart Rate','classtype_v1']
-        for feature in features_eliminate:
-            dati= dati.drop(columns=[feature],axis=1)
+    def elimina_features(self, dati):
+        # Definiamo delle coppie di parole che devono essere presenti nel nome della colonna
+        target = [
+            ['clump', 'thickness'],
+            ['uniformity', 'size'],
+            ['uniformity', 'shape'],
+            ['marginal', 'adhesion'],
+            ['epithelial', 'size'],
+            ['bare', 'nuclei'],
+            ['bland', 'chromatin'],
+            ['normal', 'nucleoli'],
+            ['mitoses']
+        ]
+
+        colonne_finali = []
+        for termini in target:
+            for col in dati.columns:
+                minuscolo = str(col).lower()
+
+                tutti_presenti = True
+                for t in termini:
+                    if t not in minuscolo:
+                        tutti_presenti = False
+                        break
+
+                if tutti_presenti:
+                    colonne_finali.append(col)
+                    break
+
+        colonne_finali = list(dict.fromkeys(colonne_finali))
+        dati = dati[colonne_finali]
         return dati
 
     #Metodo che elimina le righe a cui corrisponde un valore nullo nella colonna classtype_v1
