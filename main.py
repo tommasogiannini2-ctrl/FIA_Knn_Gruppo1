@@ -45,48 +45,15 @@ else:
     lista = []
     print('La lista è vuota')
 
-"""
-Controllo sulle dimensioni
-coppia = lista_holdout[0]
-print('HOLDOUT---------------')
-print(coppia[0].info())
-print(coppia[1].info())
-"""
-
-"""
-# Divisione training e set con il metodo Kfold
-lista_Kfold = data.Kfold(n_prove)
-# Questa lista contiene n coppie di training e test divise secondo il metodo Kfold
-
-#Ciclo per vedere se funziona tutto
-print('K FOLD---------------')
-
-for i in range(n_prove):
-    coppia = lista_Kfold[i]
-    print(f"coppia {i + 1}")
-    print(coppia[0].info())
-    print(coppia[1].info())
-
-# Divisione training e set con il metodo RandomSubsampling
-lista_RS = data.RandomSubsampling(n_prove, p_RandomSubsampling)
-# Questa lista contiene n coppie di training e test divise secondo il metodo Random Subsampling
-
-#Ciclo per vedere se funziona tutto
-print('RANDOM SUBSAMPLING---------------')
-
-for i in range(n_prove):
-    coppia = lista_RS[i]
-    print(f"coppia {i + 1}")
-    print(coppia[0].info())
-    print(coppia[1].info())
-"""
-
 # Calcolo metriche per Holdout
 coppia_holdout = lista_holdout[0]
 training_holdout = coppia_holdout[0]
 test_holdout = coppia_holdout[1]
+print("Stuttura dei datframe di training e test per esperimento Holdout. \n")
+print(training_holdout.info())
+print(test_holdout.info())
 risultati_Holdout, evaluation_holdout = calcolo_metriche(training_holdout, test_holdout)
-print("Ottenuti risultati per esperimento di Holdout")
+print("Ottenuti risultati per esperimento di Holdout. \n")
 
 # Grafici Holdout
 plotter = Plot()
@@ -99,17 +66,20 @@ for i in range(n_prove):
     coppia = lista[i]
     training = coppia[0]
     test = coppia[1]
+    print(f"Stuttura dei datframe di training e test per esperimento {i+1} di {validation_type}. \n")
+    print(training_holdout.info())
+    print(test_holdout.info())
     ris, e = calcolo_metriche(training, test)
     risultati.append(ris)
-    print(f"Ottenuti risultati per esperimento {i+1} di {validation_type}")
+    print(f"Ottenuti risultati per esperimento {i+1} di {validation_type} \n")
 
 # Calcolo medie e deviazioni standard delle metriche
 risultati_finali = calcolo_media_stddev_metriche(risultati)
 r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
 # Output in un file Excel
 r_tot.to_excel(pars.output, index=False)
-print(f"I risultati vengono salvati in {pars.output}")
 
 # Grafico RS/KF
 plotter.plot_distribuzione_performance(pd.DataFrame(risultati))
-input("Preme invio per chiudere")
+
+print(f"I risultati vengono salvati in {pars.output}. \n")
