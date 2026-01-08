@@ -70,8 +70,9 @@ Vengono quindi restituiti il dataframe delle feature e la colonna della classe o
 
 &nbsp; git clone \[https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git](https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git)
 
-2\. Entrare nella directory FIA_Knn_Gruppo1/codice
-&nbsp; cd ./FIA_Knn_Grruppo1/codice
+2\. Entrare nella directory FIA_Knn_Gruppo1
+
+&nbsp; cd ./FIA_Knn_Grruppo1
 
 3\. Eseguire il comando per avere l'Help del programma per capire le opzioni di esecuzione possibili, attivando anche il Docker e il Docker Compose
 
