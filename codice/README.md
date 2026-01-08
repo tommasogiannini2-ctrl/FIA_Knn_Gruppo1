@@ -97,30 +97,11 @@ i Valori nulli sono risolti con sostituzione della moda perchè ritenuta più ra
 
 &nbsp;   ```
 
-2\.  Creare e attivare l'ambiente virtuale:
-
-&nbsp;   ```bash
-
-&nbsp;   # (Se non si usa PyCharm)
-
-&nbsp;   source env/Scripts/activate 
-
-&nbsp;   ```
-
-3\.  Installare le dipendenze:
-
-&nbsp;   ```bash
-
-&nbsp;   pip install -r requirements.txt
-
-&nbsp;   ```
-
-4\.  Inserire il file \*\*`version\_1.csv`\*\* nella cartella \*\*`data/`\*\*.
+2\. Andare sul terminale dove sono installati Docker e Docker Compose e avviare l'esecuzione
 
 
-
-### 2. Esecuzione del Programma (Da Definire)
-Il programma dovrà essere eseguito tramite il file principale `main.py`.
+### 2. Esecuzione del Programma
+Il programma dovrà essere eseguito su linea di comando, tramite il file principale `main.py`.
 Il programma contiene 6 parser, **il solo obbligatorio è '-v'** che consente di scegliere se effettuare un Random Subsampling (inserire RS) o la K-Fold Cross Validation (inserire KF).
 Gli altri parser sono:
 * -i, --input: richiede una striga che specifica il path del file di ingresso (Default: ./dati/version_1.csv)
@@ -128,8 +109,14 @@ Gli altri parser sono:
 * -v, --validation: richiede di inserire RS o KF
 * -K, --K_prove: richiede di inserire il numero dei K esperimenti
 * -p, --percentuale_holdout: richiede di inserire la percentuale per effettuale l'Holdout
-* -h, --help: consente di visualizzare tutti i comandi precententi
+* -h, --help: consente di visualizzare tutti i comandi precedenti
 
+Una volta eseguito il main con le impostazioni desiderate, l'esecuzione mostrerà:
+* Un riepilogo delle colonne del dataframe dopo il processo di pulizia, e il numero di elementi (nulli e non nulli) che esso contiene.
+* Un riepilogo della classe obiettivo dopo il processo di pulizia, e il numero di elementi (nulli e non nulli) che essa contiene.
+* Un riepilogo della struttura dei dataframe di training e test per l'esperimento di Holdout e una conferma che i risultati siano stati calcolati.
+* Un riepilogo della struttura dei dataframe di training e test per ogni esperimenti di KFold o Random Subsampling e una conferma che i risultati siano stati calcolati.
+* Infine una conferma che i risultati siano stati salvati nella cartella scelta precedentemente.
 
 ---
 
