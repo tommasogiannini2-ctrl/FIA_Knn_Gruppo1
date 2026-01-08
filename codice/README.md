@@ -137,11 +137,15 @@ Gli altri parser sono:
 
 ## Risultati
 
+I risultati vengono salvati in maniera automatica in una cartella denominata "risultati".
+Grazie al parser -o --output è possibile indicare un altro path per il salvataggio.
 
+In questa cartella saranno presenti:
+* Un file excel contenente le metriche di tutti gli esperimenti, ovvero una colonna per
+l'esperimento di Holdout e K colonne per gli esperimenti di KFold o Random Subsampling,
+con media e deviazione standard relative a quest'ultimi.
+* Un grafico contenente la Matrice di Confusione relativa all'esperimento di Holdout.
+* Un grafico contenente la curva ROC relativa all'esperimento di Holdout.
+* Un grafico (BoxPlot) contenente la distribuzione delle metriche relative agli esperimenti di KFold o Random Subsampling.
 
-I file di output verranno salvati nella directory \*\*`results/`\*\*.
-
-
-
-\*\*\[AGGIUNGERE QUI LA GUIDA ALL'INTERPRETAZIONE DEI RISULTATI]\*\*
 

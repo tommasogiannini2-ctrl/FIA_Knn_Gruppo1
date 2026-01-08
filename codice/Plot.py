@@ -6,6 +6,12 @@ class Plot:
         pass
 
     def plot_matrice_confusione(self, cm):
+        """
+        Metodo che fa il grafico della matrice di confusione
+        :param cm: Matrice di confusione calcolata
+        Esegue il plot e non ritorna nulla
+        (Specifica per l'esperimento di Holdout)
+        """
         nomi_classi = ['Negativo (2)', 'Positivo (4)']
 
         plt.figure(figsize=(6, 5))
@@ -29,6 +35,16 @@ class Plot:
         plt.savefig('risultati/confusion_matrix_holdout.png')
 
     def plot_roc_curve(self, FPR, TPR, auc):
+        """
+        Metodo che fa il grafico della curva ROC,
+        sull'asse X è presente il False positive rate,
+        sull'asse Y il True positive rate
+        Viene presentata anche la bisettrice, che indica un classificatore casuale
+        :param FPR: False Positive Rate
+        :param TPR: True Positive Rate
+        :param auc: area sotto la curva
+        Esegue il grafico per l'esperimento di Holdout e non ritorna nulla
+        """
         plt.figure(figsize=(7, 6))
         plt.plot(FPR, TPR, color='darkorange', lw=2, label=f'ROC curve (AUC = {auc:.2f})')
         plt.plot([0, 1], [0, 1], color='navy', linestyle='--')
@@ -42,6 +58,12 @@ class Plot:
         plt.savefig('risultati/ROC_curve.png')
 
     def plot_distribuzione_performance(self, risultati):
+        """
+        Esegue un grafico che mostra la distribuzione delle varie metriche per
+        gli esperimenti di KFold o Random Subsampling
+        :param risultati: lista dei risultati per ogni esperimento
+        Esegue il grafico e non ritorna nulla
+        """
         metriche = risultati.drop(columns=['k'])
         plt.figure(figsize=(10, 6))
         metriche.boxplot()

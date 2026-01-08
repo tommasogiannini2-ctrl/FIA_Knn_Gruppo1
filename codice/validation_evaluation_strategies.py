@@ -35,7 +35,7 @@ class ValidationStrategy:
 
     def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
         """
-        Funzione che implementa il metodo di validazione Random subsampling.
+        Funzione che implementa il metodo di validazione Random Subsampling.
         Il dataframe originale viene diviso in 2 parti grazie alla percentuale p.
         :param n: numero di prove da effettuare
         :param p: percentuale di divisione in training e test
@@ -116,6 +116,16 @@ class Evaluation:
         return np.sqrt(sensitivity * specificity)
 
     def roc_curve(self, classe_vera, thresholds, prob_predette):
+        """
+         Metodo che calcola la curva ROC.
+         Si ordinano i campioni per probabilità decrescente.
+         Si fanno scorrere le soglie dal valore più alto al più basso.
+         Per ogni sogli si calcola TPR e FPR e si uniscono i punti
+        :param classe_vera: vettore che contiene la ground truth associata a un record
+        :param thresholds: vettore che contiene le soglie da confrontare
+        :param prob_predette: vettore che contiene la probabilità della classe predetta
+        :return: due liste di True Positive Rate e False Positive Rate
+        """
         TPR = []
         FPR = []
 
@@ -147,6 +157,12 @@ class Evaluation:
         return FPR_sorted, TPR_sorted
 
     def area_under_the_curve(self, fpr, tpr):
+        """
+        Metodo che calcola l'area al di sotto della curva ROC utilizzando il metodo del trapezio
+        :param fpr: vettore del False positive rate
+        :param tpr: vettore del True positive rate
+        :return: l'area sotto la curva (numero reale)
+        """
         # calcolo dell'AUC utilizzando il metodo del trapezio
         fpr = np.array(fpr)
         tpr = np.array(tpr)

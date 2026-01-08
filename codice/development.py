@@ -38,11 +38,9 @@ class KNNClassifier:
         la classe predetta sia 4 (da cui si può ricavare la probabilità della classe 2)
         """
 
-        """
-        Per ogni campione dell'insieme di training, calcola la distanza del record x 
-        dal record della classe di training
-        Ritorna un vettore delle distanze non ordinato
-        """
+        #Per ogni campione dell'insieme di training, calcola la distanza del record x
+        #dal record della classe di training
+        #Ritorna un vettore delle distanze non ordinato
         distanze = []
         for valori in self.x_training.values:
             euclidea = self.distanza_euclidea(x, valori)
@@ -69,7 +67,7 @@ class KNNClassifier:
 
     def knn_k_ottimale(self)->int:
         """
-        Questa funzione serve ad ottimizzare l'iperparametro k per svolgere l'algoritmo KNN
+        Questa funzione serve a ottimizzare l'iperparametro k per svolgere l'algoritmo KNN
         Ritorna il k ottimale facendo delle prove con vari valori di k e sceglie quello che
         commette il numero di errori minimo (se ci sono più k con un numero minimo di errori
         sceglie casualmente)
@@ -151,7 +149,8 @@ class KNNClassifier:
 
 def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple[dict, Evaluation] | None:
     """
-    Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le metriche restituendole in un dizionario.
+    Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le
+    metriche restituendole in un dizionario.
     Le metriche sono l'accuracy, l'error rate, sensitivity, specificity, geometric mean e auc.
     Viene inoltre restituito il k ottimo relativo al classificatore.
     """

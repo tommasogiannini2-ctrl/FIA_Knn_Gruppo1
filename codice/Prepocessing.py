@@ -73,7 +73,7 @@ class JSONOpener(AbstractOpener):
 
     def open(self, dataframe_path: str) -> pd.DataFrame | None:
         """
-        funzione che prende in ingresso un path con estensione .xls e lo apre
+        funzione che prende in ingresso un path con estensione .json e lo apre
         Una volta aperto sostituisce la virgola con il punto nel dataframe
         Inoltre trasforma le stringhe non valide in NaN
         Ritorna un dataframe pronto per essere ulteriormente pulito
