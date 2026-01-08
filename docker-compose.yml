@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  app-knn:
+    build: .
+    volumes:
+      - ./codice/dati:/app/dati
+      - ./codice/risultati:/app/risultati
+     
