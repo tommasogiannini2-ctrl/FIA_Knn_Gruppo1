@@ -87,21 +87,24 @@ i Valori nulli sono risolti con sostituzione della moda perchè ritenuta più ra
 
 
 
-1\.  Clonare il repository GitHub:
+1\. Clonare il repository GitHub (su una macchina che supporta Docker e Docker Compose):
 
-&nbsp;   ```bash
+&nbsp; git clone \[https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git](https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git)
 
-&nbsp;   git clone \[https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git](https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git)
+2\. Entrare nella directory FIA_Knn_Gruppo1
+&nbsp; cd FIA_Knn_Grruppo1
 
-&nbsp;   cd FIA\_Knn\_Gruppo1
+3\. Eseguire il comando per avere l'Help del programma per capire le opzioni di esecuzione possibili, attivando anche il Docker e il Docker Compose
 
-&nbsp;   ```
+&nbsp; docker-compose run app-knn python main.py -h
 
-2\. Andare sul terminale dove sono installati Docker e Docker Compose e avviare l'esecuzione
+4\. Eseguire il codice con le opzioni desiderate.
+Esempio per avere una esecuzione con il metodo KFold e un numero di prove pari a 3
+
+&nbsp; docker-compose run app-knn python main.py -v KF -K 3
 
 
 ### 2. Esecuzione del Programma
-Il programma dovrà essere eseguito su linea di comando, tramite il file principale `main.py`.
 Il programma contiene 6 parser, **il solo obbligatorio è '-v'** che consente di scegliere se effettuare un Random Subsampling (inserire RS) o la K-Fold Cross Validation (inserire KF).
 Gli altri parser sono:
 * -i, --input: richiede una striga che specifica il path del file di ingresso (Default: ./dati/version_1.csv)
