@@ -68,7 +68,7 @@ Vengono quindi restituiti il dataframe delle feature e la colonna della classe o
 
 1\. Clonare il repository GitHub (su una macchina che supporta Docker e Docker Compose):
 
-&nbsp; git clone \[https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git](https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git)
+&nbsp; git clone https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git
 
 2\. Entrare nella directory FIA_Knn_Gruppo1
 
