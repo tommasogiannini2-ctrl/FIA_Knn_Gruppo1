@@ -141,9 +141,9 @@ class Data:
         self.data=self.elimina_outrange_class(self.data)
 
         self.data=self.elimina_classnull(self.data)
-        self.data = self.elimina_recordnull(self.data)
         self.classe = self.estrai_classe()
         self.data = self.elimina_features(self.data)
+        self.data = self.elimina_recordnull(self.data)
         self.data = self.elimina_nulli(self.data)
 
         print('conta quanti null ci sno per ogni colonna')
