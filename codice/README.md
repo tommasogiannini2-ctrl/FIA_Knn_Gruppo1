@@ -27,6 +27,7 @@ Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica 
 ### Modularizzazione e Pattern
 
 * Il codice include la \*\*verifica automatica di almeno 3 test di correttezza\*\* tramite il modulo `unittest`.
+* Il codice include l'implementazione del pattern Factory per scegliere in maniera ottimale l'opener da utilizzare per aprire il file dei dati in ingresso.
 
 
 
@@ -42,57 +43,35 @@ Sono consentiti e utilizzati i seguenti pacchetti non standard:
 
 *'ABC' per l'implemetazione delle factory.
 
-aggiungi eventuali altre
+*'openpyxl' per il salvataggio dei risultati in un file excel.
 
 ---
 
 
 ## Dataset e Data Preprocessing
-I dati iniziali letti da un file csv sono stati elaborati secondo i seguenti passaggi: controllo ed eliminazione dei duplicati, eliminazioni features superficiali, eliminazione dei dati nulli, eliminazione righe che hanno valore nulli nella colonna 'classtype_v1',eliminazione righe con più di 4 valori nulli, eliminazione dei dati fuori dal range 1-10 e 2/4 per classtype_v1, conversione stringhe in interi.
-(da completare)
+I dati iniziali letti da un file di input grazie ad un opener scelto con il pattern Factory.
+Successivamenti i dati sono processati secondo i seguenti passaggi:
+* Eliminazione record duplicati.
+* Sostituzione con il valore NaN delle feature con valori fuori dal range [1, 10].
+* Sostituzione con il valore NaN dei valori diversi da 2 o 4 nella classe obiettivo.
+* Eliminazione record con classe obiettivo nulla.
+* Divisione del dataset in features e classe obiettivo.
+* Eliminazione delle features non rilevanti (non presenti nella specifica).
+* Eliminazione record con più di 4 features nulle.
+* Sostituzione dei valori NaN nei record rimanenti con la moda della feature corrispondente.
 
-### Struttura del Dataset
-
-Il dataset è un file di tipo .csv. Attraverso le factory è concessa anche la lettura di file con estensione XLS e SQL.
-
-Il dataset contiene le seguenti colonne:
-
-* \*\*ID/Identificativi:\*\* `ID`, `Sample code number` (Non utilizzate come features).
-
-* \*\*Features (X):\*\* 9 colonne con valori ordinali interi da 1 a 10.
-
-* \*\*Target (Y):\*\* `Class` (2 = Benigno, 4 = Maligno).
-
-
-
-### Gestione delle Peculiarità (Decisione Implementativa)
-
-Nel dataset è attesa la presenza di valori mancanti, contrassegnati dal carattere \*\*<<Null>>\*\*, o anomali.
-i Valori nulli sono risolti con sostituzione della moda perchè ritenuta più rappresentativa in quanto mostra il valore più probabile senza necessità di arrotondamento del valore. 
-
-
-*\*Strategia Adottata (Da Completare):\*\* 
-
-
-
----
-
+Vengono quindi restituiti il dataframe delle feature e la colonna della classe obiettivo.
 
 
 ## Istruzioni per l'Esecuzione
-
-
-
-### 1. Preparazione dell'Ambiente
-
 
 
 1\. Clonare il repository GitHub (su una macchina che supporta Docker e Docker Compose):
 
 &nbsp; git clone \[https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git](https://github.com/tommasogiannini2-ctrl/FIA\_Knn\_Gruppo1.git)
 
-2\. Entrare nella directory FIA_Knn_Gruppo1
-&nbsp; cd FIA_Knn_Grruppo1
+2\. Entrare nella directory FIA_Knn_Gruppo1/codice
+&nbsp; cd ./FIA_Knn_Grruppo1/codice
 
 3\. Eseguire il comando per avere l'Help del programma per capire le opzioni di esecuzione possibili, attivando anche il Docker e il Docker Compose
 
@@ -104,7 +83,8 @@ Esempio per avere una esecuzione con il metodo KFold e un numero di prove pari a
 &nbsp; docker-compose run app-knn python main.py -v KF -K 3
 
 
-### 2. Esecuzione del Programma
+### Guida all'esecuzione del programma
+
 Il programma contiene 6 parser, **il solo obbligatorio è '-v'** che consente di scegliere se effettuare un Random Subsampling (inserire RS) o la K-Fold Cross Validation (inserire KF).
 Gli altri parser sono:
 * -i, --input: richiede una striga che specifica il path del file di ingresso (Default: ./dati/version_1.csv)
@@ -122,8 +102,6 @@ Una volta eseguito il main con le impostazioni desiderate, l'esecuzione mostrer�
 * Infine una conferma che i risultati siano stati salvati nella cartella scelta precedentemente.
 
 ---
-
-
 
 ## Risultati
 
