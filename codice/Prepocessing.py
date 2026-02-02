@@ -33,7 +33,7 @@ class XLSOpener(AbstractOpener):
             if self.data[col].dtypes == 'object':
                 self.data[col] = self.data[col].str.replace(',', '.', regex=False)
 
-            # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
+            # errors='coerce' trasforma tutte le stringhe non valide in NaN
             self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
         return self.data
 
