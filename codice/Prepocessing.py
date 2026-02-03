@@ -1,95 +1,76 @@
 import pandas as pd
-from abc import ABC
+from abc import ABC, abstractmethod
 import numpy as np
+import os
 
 class AbstractOpener(ABC):
     """
     Classe astratta della factory.
     Serve ad aprire un file con estensione generica
     """
-    def open(self,dataframe_path:str)->pd.DataFrame|None:
+    def open(self, dataframe_path: str) -> pd.DataFrame:
+
+        if not os.path.exists(dataframe_path):
+            raise FileNotFoundError(f"File {dataframe_path} non trovato")
+        try:
+            df = self._load_data(dataframe_path)
+            return self._form_data(df)
+        except Exception as e:
+            raise RuntimeError(f"Errore durante la lettura del dataframe: {e}")
+
+    @abstractmethod
+    def _load_data(self, path: str) -> pd.DataFrame:
+        """Ogni sottoclasse implementerà la sua logica (read_csv, read_excel, etc.)"""
         pass
+
+    def _form_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Logica comune di pulizia definita solo nella classe base."""
+        target = 'classtype_v1'
+        for col in df.columns:
+            if col != target:
+                if df[col].dtypes == 'object':
+                    # Sostituisce la virgola con il punto
+                    df[col] = df[col].str.replace(',', '.', regex=False)
+
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        # Controllo sulla colonna target
+        target_numeric = pd.to_numeric(df[target], errors='coerce')
+
+        if target_numeric.isna().all():
+            # Se contiene solo stringhe, applichiamo One-Hot Encoding (Dummy variables)
+            df = pd.get_dummies(df, columns=[target], prefix='target', dtype=int)
+        else:
+            # Se era già numerico, salviamo la conversione pulita
+            df[target] = target_numeric
+
+        return df
 
 class XLSOpener(AbstractOpener):
     """
     Classe della factory.
     Serve ad aprire un file con estensione .xls
     """
-    def __init__(self):
-        self.data= None
-
-    def open(self, dataframe_path: str) -> pd.DataFrame | None:
-        """
-         funzione che prende in ingresso un path con estensione .xls e lo apre
-         Una volta aperto sostituisce la virgola con il punto nel dataframe
-         Inoltre trasforma le stringhe non valide in NaN
-         Ritorna un dataframe pronto per essere ulteriormente pulito
-        """
-        # Gestione di '?' come NaN
-        self.data = pd.read_excel(dataframe_path, na_values=['?'])
-
-        for col in self.data.columns:
-            # controlla se i numeri siano decimali con il punto e non con la virgola, in caso sostituisce
-            if self.data[col].dtypes == 'object':
-                self.data[col] = self.data[col].str.replace(',', '.', regex=False)
-
-            # errors='coerce' trasforma tutte le stringhe non valide in NaN
-            self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
-        return self.data
+    def _load_data(self, path: str) -> pd.DataFrame:
+        return pd.read_excel(path)
 
 class CSVOpener(AbstractOpener):
     """
     Classe astratta della factory.
     Serve ad aprire un file con estensione .csv
     """
-    def __init__(self):
-        self.data= None
-
-    def open(self, dataframe_path: str)->pd.DataFrame|None:
-        """
-        funzione che prende in ingresso un path con estensione .csv e lo apre
-        Una volta aperto sostituisce la virgola con il punto nel dataframe
-        Inoltre trasforma le stringhe non valide in NaN
-        Ritorna un dataframe pronto per essere ulteriormente pulito
-        """
-        self.data = pd.read_csv(dataframe_path, na_values=['?'])
-
-        for col in self.data.columns:
-            #controlla se i numeri siano decimali con il punto e non con la virgola, in caso sostituisce
-            if self.data[col].dtypes == 'object':
-                self.data[col]=self.data[col].str.replace(',','.',regex=False)
-
-            # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
-            self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
-        return self.data
+    def _load_data(self, path: str) -> pd.DataFrame:
+        return pd.read_csv(path)
 
 class JSONOpener(AbstractOpener):
     """
     Classe astratta della factory.
     Serve ad aprire un file con estensione .json
     """
-    def __init__(self):
-        self.data= None
+    def _load_data(self, path: str) -> pd.DataFrame:
+        return pd.read_json(path)
 
-    def open(self, dataframe_path: str) -> pd.DataFrame | None:
-        """
-        funzione che prende in ingresso un path con estensione .json e lo apre
-        Una volta aperto sostituisce la virgola con il punto nel dataframe
-        Inoltre trasforma le stringhe non valide in NaN
-        Ritorna un dataframe pronto per essere ulteriormente pulito
-        """
-        self.data = pd.read_json(dataframe_path, na_values=['?'])
-
-        for col in self.data.columns:
-            # controlla se i numeri siano decimali con il punto e non con la virgola, in caso sostituisce
-            if self.data[col].dtypes == 'object':
-                self.data[col] = self.data[col].str.replace(',', '.', regex=False)
-
-            # errors='coerce' trasforma tutte le stringhe non valide in NaN, risolvendo il TypeError
-            self.data[col] = pd.to_numeric(self.data[col], errors='coerce')
-        return self.data
-
-def scegli_opener(dataframe_path:str)-> JSONOpener | XLSOpener | CSVOpener:
+def scegli_opener(dataframe_path:str)-> AbstractOpener:
     """
     Funzione che prende in ingresso un path (str) e sceglie l'opener della factory
     adatto in base all'estensione
@@ -108,7 +89,7 @@ def scegli_opener(dataframe_path:str)-> JSONOpener | XLSOpener | CSVOpener:
             raise RuntimeError(f"Unsupported file type: {ext}")
 
 # Unifica il dataframe delle feature con quello della classe obbiettivo
-def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.Series | pd.DataFrame)->pd.DataFrame | None:
+def unificaDF(dataframe1: pd.DataFrame, dataframe2: pd.Series | pd.DataFrame)->pd.DataFrame:
     """
     Funzione che prende due dataframe e li unifica in un dataframe unico
     """
@@ -200,12 +181,12 @@ class Data:
     #Metodo che elimina le righe a cui corrisponde un valore nullo nella colonna classtype_v1
     def elimina_classnull(self,dati):
         target_col = 'classtype_v1'
-        righe_prima = len(dati)
+        righe_originali = len(dati)
         # Rimuove le righe dove il valore nella colonna 'classtype_v1' è nullo (NaN)
         dati = dati.dropna(subset=[target_col]).reset_index(drop=True)
-        righe_dopo = len(dati)
-        if righe_dopo > righe_prima:
-            print("ERRORE: le righe dopo togliere i null sono di più di quelle originali")
+        righe_dopo_aver_tolto_i_null = len(dati)
+        if righe_originali < righe_dopo_aver_tolto_i_null:
+            print("ERRORE: le righe dopo aver tolto i null sono di più di quelle originali")
         return dati
 
     #Metodo che elimina un record che contiene troppi (>4) valori NaN
@@ -218,9 +199,20 @@ class Data:
     #Metodo eliminazione dei valori nulli (Nan e <null>)
     def elimina_nulli(self ,dati):
         #calcolo della moda di ogni colonna, scegliendo per tutti il primo valore
+        soglia = 0.4
+        colonne_eliminare = []
         for col in dati.columns:
-            mode_value = dati[col].mode()[0]
-            dati.loc[:, col] = dati.loc[:, col].fillna(mode_value)
+            non_nulli = dati[col].count()/len(dati)
+            if non_nulli > soglia:
+                mode_value = dati[col].mode()[0]
+                dati.loc[:, col] = dati.loc[:, col].fillna(mode_value)
+            else:
+                colonne_eliminare.append(col)
+
+        if colonne_eliminare:
+            dati = dati.drop(columns=colonne_eliminare)
+            print(f"Colonne eliminate perchè sotto soglia: {colonne_eliminare}")
+
         return dati
 
     # Metodo che dal dataframe pulito estrae la classe obiettivo
@@ -242,3 +234,4 @@ class Data:
         target_col = 'classtype_v1'
         dati[target_col] = dati[target_col].mask((dati[target_col] != 2) & (dati[target_col] != 4),np.nan)
         return dati
+

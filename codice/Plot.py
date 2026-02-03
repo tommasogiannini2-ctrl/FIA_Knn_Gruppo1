@@ -32,7 +32,7 @@ class Plot:
         plt.ylabel('Classe Vera')
         plt.xlabel('Classe Predetta')
         plt.tight_layout()
-        plt.savefig('risultati/confusion_matrix_holdout.png')
+        plt.savefig('codice/risultati/confusion_matrix_holdout.png')
 
     def plot_roc_curve(self, FPR, TPR, auc):
         """
@@ -55,7 +55,7 @@ class Plot:
         plt.title('ROC Curve HOLDOUT')
         plt.legend(loc="lower right")
         plt.grid(alpha=0.3)
-        plt.savefig('risultati/ROC_curve.png')
+        plt.savefig('codice/risultati/ROC_curve.png')
 
     def plot_distribuzione_performance(self, risultati):
         """
@@ -71,4 +71,4 @@ class Plot:
         plt.ylabel('Valore Metrica')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('risultati/distribuzione_performance.png')
+        plt.savefig('codice/risultati/distribuzione_performance.png')

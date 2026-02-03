@@ -59,6 +59,7 @@ Successivamenti i dati sono processati secondo i seguenti passaggi:
 * Eliminazione delle features non rilevanti (non presenti nella specifica).
 * Eliminazione record con più di 4 features nulle.
 * Sostituzione dei valori NaN nei record rimanenti con la moda della feature corrispondente.
+Nel caso particolare in cui una colonna delle feature presenti più del 60% di valori nulli, la colonna viene rimossa in quanto sarebbe poco significativa.
 
 Vengono quindi restituiti il dataframe delle feature e la colonna della classe obiettivo.
 
