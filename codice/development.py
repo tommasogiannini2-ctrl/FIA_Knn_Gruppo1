@@ -70,7 +70,7 @@ class KNNClassifier:
         Questa funzione serve a ottimizzare l'iperparametro k per svolgere l'algoritmo KNN
         Ritorna il k ottimale facendo delle prove con vari valori di k e sceglie quello che
         commette il numero di errori minimo (se ci sono più k con un numero minimo di errori
-        sceglie casualmente)
+        sceglie il più piccolo)
         """
         lista_k = []
         lista_errori = []

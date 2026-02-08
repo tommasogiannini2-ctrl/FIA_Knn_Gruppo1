@@ -179,14 +179,14 @@ class Data:
         return dati
 
     #Metodo che elimina le righe a cui corrisponde un valore nullo nella colonna classtype_v1
-    def elimina_classnull(self,dati):
+    def elimina_classnull(self, dati):
         target_col = 'classtype_v1'
         righe_originali = len(dati)
         # Rimuove le righe dove il valore nella colonna 'classtype_v1' è nullo (NaN)
         dati = dati.dropna(subset=[target_col]).reset_index(drop=True)
         righe_dopo_aver_tolto_i_null = len(dati)
-        if righe_originali < righe_dopo_aver_tolto_i_null:
-            print("ERRORE: le righe dopo aver tolto i null sono di più di quelle originali")
+        assert righe_dopo_aver_tolto_i_null <= righe_originali, "ERRORE: le righe dopo la pulizia sono aumentate!"
+
         return dati
 
     #Metodo che elimina un record che contiene troppi (>4) valori NaN
