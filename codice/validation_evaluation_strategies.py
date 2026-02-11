@@ -4,14 +4,17 @@ from development import *
 from abc import ABC, abstractmethod
 
 class AbstractValidationStrategy(ABC):
-    """ Classe astratta che definisce l'interfaccia per tutte le strategie di validazione
+    """
+    Classe astratta che definisce l'interfaccia per tutte le strategie di validazione
     """
     def __init__(self, data):
         self.dati = data
 
     @abstractmethod
     def split(self, **kwargs) -> list[list[pd.DataFrame]]:
-        """Metodo astratto da implementare nelle classi concrete"""
+        """
+        Metodo astratto da implementare nelle classi concrete
+        """
         pass
 
 class KFoldStrategy(AbstractValidationStrategy):
@@ -70,7 +73,9 @@ class RandomSubsamplingStrategy(AbstractValidationStrategy):
         return lista
 
 def validation_factory(strategy_type, data) -> AbstractValidationStrategy:
-    """Restituisce l'istanza della strategia corretta in base al tipo"""
+    """
+    Restituisce l'istanza della strategia corretta in base al tipo
+    """
     match strategy_type:
         case 'RS' | 'Holdout':
             return RandomSubsamplingStrategy(data)
