@@ -1,48 +1,61 @@
 import pandas as pd
 import numpy as np
 from development import *
+from abc import ABC, abstractmethod
 
-class ValidationStrategy:
-    """
-    Classe contenente tutti i metodi necessari per effettuare le validation strategy.
+class AbstractValidationStrategy(ABC):
+    """ Classe astratta che definisce l'interfaccia per tutte le strategie di validazione
     """
     def __init__(self, data):
         self.dati = data
 
-    def Kfold(self, k_prove: int) -> list[list[pd.DataFrame]]:
-        """
-        Funzione che implementa il metodo di validazione Kfold.
-        Il dataframe originale viene diviso in K parti.
-        Verranno effettuati K esperimenti dove si avrà un blocco di test
-        e tutti gli altri saranno di training
-        :param k_prove: numero di divisioni da effettuare
-        :return: lista di liste contenenti dataframe di training e test
-        """
+    @abstractmethod
+    def split(self, **kwargs) -> list[list[pd.DataFrame]]:
+        """Metodo astratto da implementare nelle classi concrete"""
+        pass
+
+class KFoldStrategy(AbstractValidationStrategy):
+    """
+    Funzione che implementa il metodo di validazione Kfold.
+    Il dataframe originale viene diviso in K parti.
+    Verranno effettuati K esperimenti dove si avrà un blocco di test
+    e tutti gli altri saranno di training
+    :param k_prove: numero di divisioni da effettuare
+    :return: lista di liste contenenti dataframe di training e test
+    """
+
+    def split(self, **kwargs) -> list[list[pd.DataFrame]]:
+        # Estraggo k_prove da kwargs, 5 di default.
+        k_prove = kwargs.get('k_prove', 5)
+
         #divido il set in k parti
-        dimensione_parte = len(self.dati)//k_prove
+        dimensione_parte = len(self.dati) // k_prove
         lista = []
         for i in range(k_prove):
-            # Calcola l'indice di inizio e fine
+            #calcola l'indice di inizio e fine
             inizio = i * dimensione_parte
-            # Per l'ultima parte, assicurati di prendere tutte le righe rimanenti
             fine = (i + 1) * dimensione_parte if i < k_prove - 1 else len(self.dati)
-            # Estrai il sotto-DataFrame
             test = self.dati.iloc[inizio:fine]
             training = self.dati.drop(test.index)
-            lista.append([training,test])
-            #returna una lista di k coppie training e test
+            lista.append([training, test])
+            #ritorna una lista di k coppie di training e test
         return lista
 
-    def RandomSubsampling(self, n, p) -> list[list[pd.DataFrame]]:
-        """
-        Funzione che implementa il metodo di validazione Random Subsampling.
-        Il dataframe originale viene diviso in 2 parti grazie alla percentuale p.
-        :param n: numero di prove da effettuare
-        :param p: percentuale di divisione in training e test
-        :return: lista di liste contenenti dataframe di training e test
-        Questo codice viene utilizzato anche per la validazione Holdout,
-        essa infatti è semplicemente un Random Subsampling ripetuto una volta sola
-        """
+class RandomSubsamplingStrategy(AbstractValidationStrategy):
+    """
+    Funzione che implementa il metodo di validazione Random Subsampling.
+    Il dataframe originale viene diviso in 2 parti grazie alla percentuale p.
+    :param n: numero di prove da effettuare
+    :param p: percentuale di divisione in training e test
+    :return: lista di liste contenenti dataframe di training e test
+    Questo codice viene utilizzato anche per la validazione Holdout,
+    essa infatti è semplicemente un Random Subsampling ripetuto una volta sola
+    """
+
+    def split(self, **kwargs) -> list[list[pd.DataFrame]]:
+        #ripetizione di n volte l'estrazione del training set che ha una percentuale p
+        n = kwargs.get('n', 1)
+        p = kwargs.get('p', 0.8)
         #ripetizione di n volte l'estrazione del training set che ha una percentuale p
         lista =[]
         len_col = len(self.dati)
@@ -55,6 +68,17 @@ class ValidationStrategy:
             lista.append([training,test])
         #ritorna una lista di liste dove in ogni lista interna c'è training e test
         return lista
+
+def validation_factory(strategy_type, data) -> AbstractValidationStrategy:
+    """Restituisce l'istanza della strategia corretta in base al tipo"""
+    match strategy_type:
+        case 'RS' | 'Holdout':
+            return RandomSubsamplingStrategy(data)
+        case 'KF':
+            return KFoldStrategy(data)
+        case _:
+            raise ValueError(f"Strategia {strategy_type} non supportata")
+
 
 class Evaluation:
     """

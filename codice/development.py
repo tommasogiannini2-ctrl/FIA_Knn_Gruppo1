@@ -55,10 +55,19 @@ class KNNClassifier:
         tab_ordinata = tab.sort_values(by = ['distanze'], ascending = True)
         indici_k = tab_ordinata.iloc[:self.k]
 
-        # estrazione della classe più frequente
+        # estrazione della classe più frequente, gestione anche del caso di pareggio
         colonna_classi = indici_k['y_training']
         conteggio_classi = colonna_classi.value_counts()
-        classe_maggiore = conteggio_classi.index[0]
+
+        #max voti indica quanti campioni appartengono alla classe maggiore, se pareggio è uguale
+        max_voti = conteggio_classi.max()
+        #vincitori è la lista che contiene chi ha il massimo dei voti, se pareggio la lista contiene chi ha la parità dei voti
+        vincitori = conteggio_classi[conteggio_classi == max_voti].index.tolist()
+
+        if len(vincitori) > 1:
+            classe_maggiore = np.random.choice(vincitori)
+        else:
+            classe_maggiore = vincitori[0]
 
         classe_4=conteggio_classi.get(4, 0)
         prob_predetta_4 = classe_4/ self.k
@@ -84,11 +93,11 @@ class KNNClassifier:
         x_training = self.x_training.copy()
         y_training = self.y_training.copy()
 
-        # crea il set di validazione
-        validation_strategy = ValidationStrategy(self.training)
-        validation_set = validation_strategy.RandomSubsampling(1, 0.8)[0]
-        training_k = validation_set[0]
-        validation_k = validation_set[1]
+
+        #crea il set di validazione
+        validation_strategy_obj = validation_factory('Holdout', self.training)
+        validation_set_lista = validation_strategy_obj.split(n=1, p=0.8)
+        training_k, validation_k = validation_set_lista[0]
 
         self.x_training = training_k.drop(columns=['classtype_v1'])
         self.y_training = training_k['classtype_v1']

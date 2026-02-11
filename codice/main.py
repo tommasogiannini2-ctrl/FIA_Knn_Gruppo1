@@ -29,21 +29,14 @@ tupla = dati.load()
 # Dataframe unico e pulito, da questo bisognerà dividere in training e set
 data_unico = unificaDF(tupla[0],tupla[1])
 
-# Parametri per la divisione
-data = ValidationStrategy(data_unico)
-p_RandomSubsampling = 0.8
+# factory per  Holdout
+factory_holdout = validation_factory('Holdout', data_unico)
+lista_holdout = factory_holdout.split(n=1, p=p_Holdout)
 
-# Divisione con holdout
-lista_holdout = data.RandomSubsampling(1,p_Holdout)
-# Questa lista contiene una coppia di training e test divise secondo il metodo Holduot
 
-if validation_type == 'RS':
-    lista = data.RandomSubsampling(n_prove, p_RandomSubsampling)
-elif validation_type == 'KF':
-    lista = data.Kfold(n_prove)
-else:
-    lista = []
-    print('La lista è vuota')
+factory_main = validation_factory(validation_type, data_unico)
+
+lista = factory_main.split(k_prove=n_prove, n=n_prove, p=0.8)
 
 # Calcolo metriche per Holdout
 coppia_holdout = lista_holdout[0]
