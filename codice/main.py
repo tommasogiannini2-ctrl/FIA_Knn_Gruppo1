@@ -60,8 +60,8 @@ for i in range(n_prove):
     training = coppia[0]
     test = coppia[1]
     print(f"Stuttura dei datframe di training e test per esperimento {i+1} di {validation_type}. \n")
-    print(training_holdout.info())
-    print(test_holdout.info())
+    print(training.info())
+    print(test.info())
     ris, e = calcolo_metriche(training, test)
     risultati.append(ris)
     print(f"Ottenuti risultati per esperimento {i+1} di {validation_type} \n")
