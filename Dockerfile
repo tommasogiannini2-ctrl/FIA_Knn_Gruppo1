@@ -7,4 +7,7 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./codice /app
+
+RUN mkdir -p /app/dati /app/risultati && chmod -R 777 /app/risultati
+
 CMD ["python", "main.py"]

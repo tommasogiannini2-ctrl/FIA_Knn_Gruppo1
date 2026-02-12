@@ -4,5 +4,6 @@ services:
     build: .
     volumes:
       - ./codice/dati:/app/dati
-      - ./codice/risultati:/app/risultati
-     
+      - ${PATH_OUT:-./codice/risultati}:/app/risultati
+    environment:
+      - OUT_DIR=/app/risultati

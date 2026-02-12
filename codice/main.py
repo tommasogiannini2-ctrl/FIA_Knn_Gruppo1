@@ -9,9 +9,13 @@ import os
 
 parser = argparse.ArgumentParser(description='Elabora un dataframe secondo il metodo KKN e calcola le metriche più comuni.')
 
+# Recupero percorsi da variabili d'ambiente (per compatibilità Docker) o uso default locali
+default_input = os.getenv('IN_DIR', './dati')
+default_output = os.getenv('OUT_DIR', './risultati')
+
 # definisce l'argomento per il file di ingresso e di uscita con un valore di default
-parser.add_argument('-i', '--input', type=str, default='./dati/version_1.csv', help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
-parser.add_argument('-o', '--output', type=str, default='./risultati',help='Inserire percorso della cartella di uscita (Default: risultati)')
+parser.add_argument('-i', '--input', type=str, default=os.path.join(default_input, 'version_1.csv'), help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
+parser.add_argument('-o', '--output', type=str, default=default_output, help='Inserire percorso della cartella di uscita (Default: risultati)')
 parser.add_argument('-v', '--validation', type=str, default=None, required=True, choices=['RS','KF'], help='Scegliere il metodo di validazione da eseguire (Inserire RS per eseguire il Random Subsampling o KF per eseguire il K-Fold Cross Validation)')
 parser.add_argument('-p', '--percentuale_holdout', type=float, default=0.8, help="Scegliere percentuale per l'holdout (Default: 0.8)")
 parser.add_argument('-K', '--K_prove', type=int, default=5, help='Scegliere il numero di esperimenti da eseguire per il Random Subsampling o per il K-Fold Cross Validation (Default=5)')
@@ -27,8 +31,11 @@ filename = pars.input
 opener = scegli_opener(filename)
 
 #Creaione cartelle per i file di uscita (se non esiste già)
-os.makedirs(pars_out)
-print(f"Cartella {pars_out} creata!")
+if pars_out:
+    # Usiamo exist_ok=True per evitare errori se la cartella è stata già creata da Docker
+    os.makedirs(pars_out, exist_ok=True)
+    if not os.path.exists(pars_out): # Controllo di cortesia per il print
+        print(f"Cartella {pars_out} creata! \n")
 
 dati = Data(opener,filename)
 tupla = dati.load()
