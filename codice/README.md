@@ -90,7 +90,7 @@ Esempio per avere una esecuzione con il metodo KFold e un numero di prove pari a
 Il programma contiene 6 parser, **il solo obbligatorio è '-v'** che consente di scegliere se effettuare un Random Subsampling (inserire RS) o la K-Fold Cross Validation (inserire KF).
 Gli altri parser sono:
 * -i, --input: richiede una striga che specifica il path del file di ingresso (Default: ./dati/version_1.csv)
-* -o, --output: richiede una stringa che specifica il pth del file di uscita (Default: risultati.xlsx)
+* -o, --output: richiede una stringa che specifica il path della cartella dove si vogliono salvare i risultati (Default: ./risultati)
 * -v, --validation: richiede di inserire RS o KF
 * -K, --K_prove: richiede di inserire il numero dei K esperimenti
 * -p, --percentuale_holdout: richiede di inserire la percentuale per effettuale l'Holdout
@@ -108,7 +108,7 @@ Una volta eseguito il main con le impostazioni desiderate, l'esecuzione mostrer�
 ## Risultati
 
 I risultati vengono salvati in maniera automatica in una cartella denominata "risultati".
-Grazie al parser -o --output è possibile indicare un altro path per il salvataggio.
+Grazie al parser -o --output è possibile indicare un altro path per scegliere la cartella dove effetuare il salvataggio.
 
 In questa cartella saranno presenti:
 * Un file excel contenente le metriche di tutti gli esperimenti, ovvero una colonna per
