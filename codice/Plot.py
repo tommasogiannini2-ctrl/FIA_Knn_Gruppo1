@@ -5,7 +5,7 @@ class Plot:
     def __init__(self):
         pass
 
-    def plot_matrice_confusione(self, cm):
+    def plot_matrice_confusione(self, cm, path):
         """
         Metodo che fa il grafico della matrice di confusione
         :param cm: Matrice di confusione calcolata
@@ -32,9 +32,9 @@ class Plot:
         plt.ylabel('Classe Vera')
         plt.xlabel('Classe Predetta')
         plt.tight_layout()
-        plt.savefig('risultati/confusion_matrix_holdout.png')
+        plt.savefig(path + '/confusion_matrix_holdout.png')
 
-    def plot_roc_curve(self, FPR, TPR, auc):
+    def plot_roc_curve(self, FPR, TPR, auc, path):
         """
         Metodo che fa il grafico della curva ROC,
         sull'asse X è presente il False positive rate,
@@ -55,9 +55,9 @@ class Plot:
         plt.title('ROC Curve HOLDOUT')
         plt.legend(loc="lower right")
         plt.grid(alpha=0.3)
-        plt.savefig('risultati/ROC_curve.png')
+        plt.savefig(path + '/ROC_curve.png')
 
-    def plot_distribuzione_performance(self, risultati):
+    def plot_distribuzione_performance(self, risultati, path):
         """
         Esegue un grafico che mostra la distribuzione delle varie metriche per
         gli esperimenti di KFold o Random Subsampling
@@ -71,4 +71,4 @@ class Plot:
         plt.ylabel('Valore Metrica')
         plt.xticks(rotation=45)
         plt.tight_layout()
-        plt.savefig('risultati/distribuzione_performance.png')
+        plt.savefig(path + '/distribuzione_performance.png')

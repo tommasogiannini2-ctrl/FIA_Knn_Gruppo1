@@ -4,12 +4,14 @@ from validation_evaluation_strategies import *
 import argparse
 import numpy as np
 import pandas as pd
+import os
+
 
 parser = argparse.ArgumentParser(description='Elabora un dataframe secondo il metodo KKN e calcola le metriche più comuni.')
 
 # definisce l'argomento per il file di ingresso e di uscita con un valore di default
-parser.add_argument('-i', '--input', type=str, default='dati/version_1.csv', help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
-parser.add_argument('-o', '--output', type=str, default='risultati/risultati.xlsx',help='Inserire percorso del file excel di uscita (Default: risultati.xlsx)')
+parser.add_argument('-i', '--input', type=str, default='./dati/version_1.csv', help='Inserire percorso del file di ingresso (Default: dati/version_1.csv)')
+parser.add_argument('-o', '--output', type=str, default='./risultati',help='Inserire percorso della cartella di uscita (Default: risultati)')
 parser.add_argument('-v', '--validation', type=str, default=None, required=True, choices=['RS','KF'], help='Scegliere il metodo di validazione da eseguire (Inserire RS per eseguire il Random Subsampling o KF per eseguire il K-Fold Cross Validation)')
 parser.add_argument('-p', '--percentuale_holdout', type=float, default=0.8, help="Scegliere percentuale per l'holdout (Default: 0.8)")
 parser.add_argument('-K', '--K_prove', type=int, default=5, help='Scegliere il numero di esperimenti da eseguire per il Random Subsampling o per il K-Fold Cross Validation (Default=5)')
@@ -20,8 +22,20 @@ validation_type = pars.validation
 p_Holdout = pars.percentuale_holdout
 n_prove = pars.K_prove
 
+#Scelta opener a seconda dell'estensione del file di ingresso
 filename = pars.input
 opener = scegli_opener(filename)
+
+#Creaione cartelle per i file di uscita (se non esiste già)
+cartella = os.path.dirname(pars_out)
+if cartella and not os.path.exists(cartella):
+    os.makedirs(cartella)
+
+if not os.path.exists(pars_out):
+    os.makedirs(pars_out)
+    print(f"Cartella {pars_out} creata!")
+
+
 
 dati = Data(opener,filename)
 tupla = dati.load()
@@ -50,8 +64,8 @@ print("Ottenuti risultati per esperimento di Holdout. \n")
 
 # Grafici Holdout
 plotter = Plot()
-plotter.plot_matrice_confusione(evaluation_holdout.confusion_matrix)
-plotter.plot_roc_curve(evaluation_holdout.FPR, evaluation_holdout.TPR, risultati_Holdout['auc'])
+plotter.plot_matrice_confusione(evaluation_holdout.confusion_matrix, pars_out)
+plotter.plot_roc_curve(evaluation_holdout.FPR, evaluation_holdout.TPR, risultati_Holdout['auc'],pars_out)
 
 # Calcolo metriche per ogni esperimento RS o KF
 risultati = []
@@ -70,9 +84,10 @@ for i in range(n_prove):
 risultati_finali = calcolo_media_stddev_metriche(risultati)
 r_tot = unisci_risultati(risultati_Holdout, risultati, risultati_finali)
 # Output in un file Excel
-r_tot.to_excel(pars.output, index=False)
+path_excel=pars_out +"/risultati.xlsx"
+r_tot.to_excel(path_excel, index=False)
 
 # Grafico RS/KF
-plotter.plot_distribuzione_performance(pd.DataFrame(risultati))
+plotter.plot_distribuzione_performance(pd.DataFrame(risultati),pars_out)
 
-print(f"I risultati vengono salvati in {pars.output} \n")
+print(f"I risultati vengono salvati in {path_excel} \n")
