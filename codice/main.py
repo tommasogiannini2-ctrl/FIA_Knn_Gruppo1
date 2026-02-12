@@ -27,15 +27,8 @@ filename = pars.input
 opener = scegli_opener(filename)
 
 #Creaione cartelle per i file di uscita (se non esiste già)
-cartella = os.path.dirname(pars_out)
-if cartella and not os.path.exists(cartella):
-    os.makedirs(cartella)
-
-if not os.path.exists(pars_out):
-    os.makedirs(pars_out)
-    print(f"Cartella {pars_out} creata!")
-
-
+os.makedirs(pars_out)
+print(f"Cartella {pars_out} creata!")
 
 dati = Data(opener,filename)
 tupla = dati.load()
