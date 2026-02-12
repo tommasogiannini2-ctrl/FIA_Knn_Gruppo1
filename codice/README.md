@@ -27,7 +27,7 @@ Il progetto mira a sviluppare una \*\*pipeline di Machine Learning\*\* generica 
 ### Modularizzazione e Pattern
 
 * Il codice include la \*\*verifica automatica di almeno 3 test di correttezza\*\* tramite il modulo `unittest`.
-* Il codice include l'implementazione del pattern Factory per scegliere in maniera ottimale l'opener da utilizzare per aprire il file dei dati in ingresso.
+* Il codice include l'implementazione del pattern Factory per scegliere in maniera ottimale l'opener da utilizzare per aprire il file dei dati in ingresso e per scegliere la strategia richiesta per la divisione in test e training set.
 
 
 
