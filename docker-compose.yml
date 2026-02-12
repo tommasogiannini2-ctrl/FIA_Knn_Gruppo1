@@ -3,7 +3,6 @@ services:
   app-knn:
     build: .
     volumes:
-      - ./codice/dati:/app/dati
-      - ${PATH_OUT:-./codice/risultati}:/app/risultati
+      - ./codice:/app
     environment:
-      - OUT_DIR=/app/risultati
+      - PYTHONUNBUFFERED=1

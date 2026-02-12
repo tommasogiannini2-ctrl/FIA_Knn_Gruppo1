@@ -8,6 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ./codice /app
 
-RUN mkdir -p /app/dati /app/risultati && chmod -R 777 /app/risultati
+RUN mkdir -p /app/dati /app/risultati && chmod -R 777 /app
 
 CMD ["python", "main.py"]
