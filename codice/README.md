@@ -77,12 +77,12 @@ Vengono quindi restituiti il dataframe delle feature e la colonna della classe o
 
 3\. Eseguire il comando per avere l'Help del programma per capire le opzioni di esecuzione possibili, attivando anche il Docker e il Docker Compose
 
-&nbsp; docker-compose run app-knn python main.py -h
+&nbsp; docker compose run app-knn python main.py -h
 
 4\. Eseguire il codice con le opzioni desiderate.
 Esempio per avere una esecuzione con il metodo KFold e un numero di prove pari a 3
 
-&nbsp; docker-compose run app-knn python main.py -v KF -K 3
+&nbsp; docker compose run app-knn python main.py -v KF -K 3
 
 
 ### Guida all'esecuzione del programma
