@@ -189,7 +189,7 @@ class Data:
 
         return dati
 
-    #Metodo che elimina un record che contiene troppi (>4) valori NaN
+    #Metodo che elimina un record che contiene troppi  valori NaN (>4)
     def elimina_recordnull(self,dati):
         N_max_null=4
         #il thresh garantisce che chi non soddisfa la condizione di minimi valori non nulli venga eliminato
@@ -225,7 +225,6 @@ class Data:
         colonna_target = 'classtype_v1'
         feature_cols = [col for col in dati.columns if col != colonna_target]
         for col in feature_cols:
-         # Qui il confronto è sicuro perché il CSVOpener ha già convertito tutto in numerico.
             dati[col] = dati[col].mask((dati[col] < 1) | (dati[col] > 10), np.nan)
         return dati
 

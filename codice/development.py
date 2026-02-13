@@ -85,7 +85,7 @@ class KNNClassifier:
         lista_errori = []
         K_limite_superiore = len(self.x_training)
         # K_max per la ricerca: Usiamo 51 o K_limite_superiore per non eseguire troppe prove
-        # e non renderlo troppo pesante computazionalmente e evitare overfitting
+        # e non renderlo troppo pesante computazionalmente, evitare underfitting
         # scegliendo il valore più piccolo
         K_max = min(51, K_limite_superiore-1)
 

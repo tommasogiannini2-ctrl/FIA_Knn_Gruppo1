@@ -38,8 +38,8 @@ opener = scegli_opener(filename)
 if pars_out:
     cartella_gia_esistente = os.path.exists(pars_out)
     os.makedirs(pars_out, exist_ok=True)
-    if not cartella_gia_esistente:  # Controllo di cortesia per il print
-        print(f"Cartella {pars_out} creata! \n")
+    if not cartella_gia_esistente:
+        print(f"Cartella {pars_out} creata \n")
 
 dati = Data(opener,filename)
 tupla = dati.load()
