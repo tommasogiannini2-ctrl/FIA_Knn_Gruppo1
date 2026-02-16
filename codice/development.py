@@ -85,8 +85,7 @@ class KNNClassifier:
         lista_errori = []
         K_limite_superiore = len(self.x_training)
         # K_max per la ricerca: Usiamo 51 o K_limite_superiore per non eseguire troppe prove
-        # e non renderlo troppo pesante computazionalmente, evitare underfitting
-        # scegliendo il valore più piccolo
+        # e non renderlo troppo pesante computazionalmente scegliendo il valore più piccolo
         K_max = min(51, K_limite_superiore-1)
 
         # copia per ripristinarlo dopo
@@ -156,7 +155,7 @@ class KNNClassifier:
         return classe_predetta, prob_class_4
 
 
-def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame)-> tuple[dict, Evaluation] | None:
+def calcolo_metriche(dataframe1: pd.DataFrame, dataframe2: pd.DataFrame):
     """
     Questo metodo prende in ingresso un dataframe di test e uno di training, e calcola le
     metriche restituendole in un dizionario.
