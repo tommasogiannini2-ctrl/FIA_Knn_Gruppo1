@@ -49,7 +49,7 @@ Sono consentiti e utilizzati i seguenti pacchetti non standard:
 
 
 ## Dataset e Data Preprocessing
-I dati iniziali letti da un file di input grazie ad un opener scelto con il pattern Factory.
+I dati iniziali vengono letti da un file di input grazie ad un opener scelto con il pattern Factory.
 Successivamenti i dati sono processati secondo i seguenti passaggi:
 * Eliminazione record duplicati.
 * Sostituzione con il valore NaN delle feature con valori fuori dal range [1, 10].
@@ -100,8 +100,8 @@ Una volta eseguito il main con le impostazioni desiderate, l'esecuzione mostrer√
 * Un riepilogo delle colonne del dataframe dopo il processo di pulizia, e il numero di elementi (nulli e non nulli) che esso contiene.
 * Un riepilogo della classe obiettivo dopo il processo di pulizia, e il numero di elementi (nulli e non nulli) che essa contiene.
 * Un riepilogo della struttura dei dataframe di training e test per l'esperimento di Holdout e una conferma che i risultati siano stati calcolati.
-* Un riepilogo della struttura dei dataframe di training e test per ogni esperimenti di KFold o Random Subsampling e una conferma che i risultati siano stati calcolati.
-* Infine una conferma che i risultati siano stati salvati nella cartella scelta precedentemente.
+* Un riepilogo della struttura dei dataframe di training e test per ogni esperimento di KFold o Random Subsampling e una conferma che i risultati siano stati calcolati.
+* Infine una conferma che i risultati siano stati salvati nella cartella di output scelta precedentemente.
 
 ---
 
